@@ -28,7 +28,7 @@
   --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:clip}
 body{background:var(--bg);color:var(--ink);font:15px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
 a{color:var(--blue);text-decoration:none}
 ::selection{background:#2470ff66}
@@ -273,6 +273,13 @@ body.noscroll{overflow:hidden}
 .fsubmit{width:100%;justify-content:center;margin-top:.6rem;padding:.92rem 1.5rem;font-size:.98rem}
 .fok{text-align:center;font-size:.82rem;font-weight:600;min-height:1.1rem;color:var(--good)}
 .fshint{text-align:center;font-size:.82rem;color:var(--ink-3)}
+.fdone{display:flex;flex-direction:column;align-items:center;text-align:center;padding:2.8rem 1rem}
+.fdone .ic{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  margin-bottom:1.1rem;background:linear-gradient(180deg,#4f88ff2e,#2470ff1c);
+  border:1px solid #5792ff59;box-shadow:0 0 28px #2470ff4d}
+.fdone h3{font-family:var(--disp);font-weight:300;font-size:1.75rem;letter-spacing:-.02em}
+.fdone p{color:var(--ink-2);max-width:360px;margin:.45rem 0 1.6rem;line-height:1.6}
+.fdone p b{color:var(--ink)}
 .raillabel{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
   color:var(--ink-3);margin-bottom:1.2rem}
 .railsteps{list-style:none;display:flex;flex-direction:column;gap:1.1rem;margin-bottom:2rem}
@@ -470,7 +477,7 @@ details.faq[open]{background:var(--card-hi);border-color:var(--line-hi)}
   -webkit-mask-image:radial-gradient(78% 72% at 50% 34%,#000,transparent 72%);
   mask-image:radial-gradient(78% 72% at 50% 34%,#000,transparent 72%)}
 .finale .fglow{position:absolute;top:-140px;left:50%;transform:translateX(-50%);
-  width:900px;height:600px;border-radius:50%;pointer-events:none;
+  width:min(900px,100vw);height:600px;border-radius:50%;pointer-events:none;
   background:radial-gradient(closest-side,#2470ff2b,#2470ff0d 48%,transparent 74%);filter:blur(10px)}
 .finale>*{position:relative;z-index:1}
 .finale .fmark{width:54px;height:54px;margin:0 auto 1.5rem;filter:drop-shadow(0 0 22px #2470ff99)}
@@ -772,6 +779,7 @@ FEEB tokenId:  576667
               <input type="range" id="f-split" min="10" max="90" value="50" class="frange" aria-label="Your share of creator fees">
               <div class="fsplit"><span id="f-splitlabel">you keep 50% · partner 50%</span><span>locked on-chain</span></div></div>
           </div>
+          <input type="text" id="f-hp" name="botcheck" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;height:0;opacity:0" aria-hidden="true">
           <button class="btn primary fsubmit" id="f-submit">Submit launch <span class="arr">→</span></button>
           <div class="fok" id="f-ok"></div>
           <div class="fshint">Reviewed and matched by hand · no upfront cost</div>
@@ -815,6 +823,7 @@ FEEB tokenId:  576667
               <input type="range" id="r-share" min="20" max="80" value="40" class="frange" aria-label="Minimum share">
               <div class="fsplit"><span id="r-sharelabel">40% of creator fees</span><span>you set this</span></div></div>
           </div>
+          <input type="text" id="r-hp" name="botcheck" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;height:0;opacity:0" aria-hidden="true">
           <button class="btn primary fsubmit" id="r-submit">Join privately <span class="arr">→</span></button>
           <div class="fok" id="r-ok"></div>
           <div class="fshint">You're never listed anywhere · launches come to you</div>
@@ -1097,7 +1106,7 @@ document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%4)
 <script>
 // ---------- full-screen submit / join views (hash-routed) ----------
 (()=>{
-  const WINGMAN_DM_URL="https://x.com/wingmanrh"; // swap for "https://x.com/messages/compose?recipient_id=<id>" to open a prefilled DM directly
+  const W3F_KEY="6520ac92-4547-4394-9793-f43855de42f6"; // web3forms.com access key — fill before deploy
   const $=id=>document.getElementById(id);
   const views={submit:$('view-submit'),join:$('view-join')};
   if(!views.submit||!views.join)return;
@@ -1128,14 +1137,34 @@ document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%4)
     $('r-share').addEventListener('input',u);u();}
 
   const wallet=w=>/^0x[0-9a-fA-F]{6,}/.test(w);
-  const dm=(okEl,msg)=>{
-    navigator.clipboard&&navigator.clipboard.writeText(msg).catch(()=>{});
-    okEl.style.color='#0d7d6c';
-    const compose=WINGMAN_DM_URL.includes('messages/compose');
-    okEl.textContent=compose
-      ?'Details copied — opening our X DMs…'
-      :'Details copied — opening @wingmanrh: hit Message and paste.';
-    window.open(compose?WINGMAN_DM_URL+'&text='+encodeURIComponent(msg):WINGMAN_DM_URL,'_blank','noopener');
+  const done=(btn,handle)=>{
+    handle=String(handle).replace(/[^\w.]/g,'');
+    const form=btn.closest('.fsform');
+    form.innerHTML=`<div class="fdone">
+      <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4.5 12.5l5 5 10-11" stroke="#5792ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h3>Got it.</h3>
+      <p>We&#39;ll review and reach out to <b>@${handle}</b> within 24 hours. Keep an eye on your DMs.</p>
+      <a class="btn ghost" href="#" data-done-close>Back to the site</a></div>`;
+    form.querySelector('[data-done-close]').addEventListener('click',e=>{e.preventDefault();close();});
+  };
+  const send=async(btn,ok,hp,subject,data)=>{
+    if(hp&&hp.value)return;                          // honeypot tripped — drop silently
+    if(W3F_KEY.charAt(0)==='['){ok.style.color='#c73e59';
+      ok.textContent='Intake isn’t live yet — DM @wingmanrh on X instead.';return;}
+    const orig=btn.innerHTML;
+    btn.disabled=true;btn.innerHTML='Sending…';ok.textContent='';
+    try{
+      const r=await fetch('https://api.web3forms.com/submit',{method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify(Object.assign({access_key:W3F_KEY,subject,from_name:'Wingman intake'},data))});
+      const j=await r.json();
+      if(!j.success)throw 0;
+      done(btn,data['Handle'].replace(/^@/,''));
+    }catch(e){
+      btn.disabled=false;btn.innerHTML=orig;
+      ok.style.color='#c73e59';
+      ok.textContent='Couldn’t send right now — try again in a minute, or DM @wingmanrh.';
+    }
   };
   // stage toggle (pre-launch / already live)
   let fStage='pre';
@@ -1158,22 +1187,28 @@ document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%4)
   // submit launch
   if($('f-submit'))$('f-submit').addEventListener('click',()=>{
     const h=$('f-handle').value.trim().replace(/^@/,''),angle=$('f-angle').value.trim(),
-          nm=$('f-name').value.trim(),p=100-+$('f-split').value,ok=$('f-ok');
+          nm=$('f-name').value.trim(),v=+$('f-split').value,p=100-v,ok=$('f-ok'),btn=$('f-submit');
     if(fStage==='pre'){
-      const win=$('f-window').value;
       if(!h||!angle){ok.style.color='#c73e59';ok.textContent='Add your handle and the angle.';return;}
-      dm(ok,`gm — submitting a launch to Wingman.\n\nStage: pre-launch · window: ${win}\nHandle: @${h}\nToken: ${nm||'TBD'}\nThe angle: ${angle}\nReach partner earns: ${p}% of creator fees (locked on-chain)\n\nlet's set it up.`);
+      send(btn,ok,$('f-hp'),`Launch submission — @${h} (pre-launch)`,{
+        'Handle':'@'+h,'Stage':'pre-launch','Launch window':$('f-window').value,
+        'Token':nm||'TBD','The angle':angle,
+        'Fee split':`launcher ${v}% / partner ${p}%`});
     }else{
       const t=$('f-token').value.trim();
       if(!h||!wallet(t)){ok.style.color='#c73e59';ok.textContent='Add your handle and a valid 0x token address.';return;}
-      dm(ok,`gm — submitting a live token to Wingman.\n\nStage: already live\nHandle: @${h}\nToken address: ${t}\nWhat's next: ${angle||'—'}\nReach partner earns: ${p}% of creator fees (locked on-chain)\n\nlet's set it up.`);
+      send(btn,ok,$('f-hp'),`Launch submission — @${h} (live token)`,{
+        'Handle':'@'+h,'Stage':'already live','Token address':t,
+        'Token':nm||'—','Whats next':angle||'—',
+        'Fee split':`launcher ${v}% / partner ${p}%`});
     }
   });
   // join privately
   if($('r-submit'))$('r-submit').addEventListener('click',()=>{
-    const h=$('r-handle').value.trim().replace(/^@/,''),s=+$('r-share').value,ok=$('r-ok');
+    const h=$('r-handle').value.trim().replace(/^@/,''),s=+$('r-share').value,ok=$('r-ok'),btn=$('r-submit');
     if(!h){ok.style.color='#c73e59';ok.textContent='Add your X handle.';return;}
-    dm(ok,`gm — I have reach and want to join Wingman privately.\n\nHandle: @${h}\nMinimum share I'll take: ${s}% of creator fees\n\nlet's talk.`);
+    send(btn,ok,$('r-hp'),`Reach application — @${h}`,{
+      'Handle':'@'+h,'Minimum share':s+'% of creator fees'});
   });
 })();
 </script>
