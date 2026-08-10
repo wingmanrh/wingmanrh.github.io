@@ -1041,7 +1041,14 @@ FEEB tokenId:  576667
   new IntersectionObserver(e=>visible=e[0].isIntersecting).observe(cv);
 
   function frame(t){
+    try{
     if(visible){
+      // self-heal: a single NaN would silently poison transforms forever
+      if(!isFinite(par.x))par.x=0;if(!isFinite(par.y))par.y=0;
+      if(!isFinite(smx))smx=0;if(!isFinite(smy))smy=0;
+      if(!isFinite(gret))gret=1;if(!isFinite(lyaw))lyaw=0;if(!isFinite(yaw))yaw=0;
+      // heal a stale canvas bitmap (resize events can be missed)
+      if(cv.width!==Math.round(cv.clientWidth*DPR)||cv.height!==Math.round(cv.clientHeight*DPR))size();
       const dt=Math.min((t-last)/1000,.05)||0;last=t;
       if(((nfT++)&63)===0)noflySize();         // layout can shift after font swap
       const pe=prog*prog*(3-2*prog);             // smoothstep
@@ -1154,19 +1161,28 @@ FEEB tokenId:  576667
           // (Morpho brandRetractFactor .4, damped like their brandRadiusDaming)
           const XT=clamp01((prog-.88)/.11);
           gret+=((1-.4*XT)-gret)/12;
-          // faint orbital paths (skipped on small screens, where the text no-fly
-          // zone pushes logos off the true ellipse and the line would lie)
-          if(vw>=700&&ramp>0){
-            for(const rr of [0.46,0.72]){
+          const onering=vw<640;                  // phones: one tall ellipse, no crossings
+          // ring semi-axes: viewport-scaled but NEVER tighter than the text no-fly
+          // zone — on short windows the raw ellipse dives inside it and chips get
+          // pushed off the drawn line ("flying out of orbit"). Lines share these axes.
+          const grx=nfW+58, gry=nfH+56;
+          const AX=[Math.max(.46*RL*1.2,grx+24),Math.max(.72*RL*1.2,grx+120)];
+          const AY=[Math.max(.46*RL*.68,gry+18),Math.max(.72*RL*.68,gry+88)];
+          AX[1]=Math.max(AX[1],AX[0]+76);AY[1]=Math.max(AY[1],AY[0]+60);
+          // faint orbital paths — drawn from the SAME axes the chips use
+          if(!onering&&ramp>0){
+            for(const i of [0,1]){
               ctx.beginPath();
-              ctx.ellipse(W/2+apx*DPR,H/2+apy*DPR,rr*RL*1.2*DPR*gret,rr*RL*.68*DPR*gret,0,0,6.2831853);
+              ctx.ellipse((vw/2+apx)*DPR,(vh/2+apy)*DPR,
+                Math.max(AX[i]*gret,grx+14)*DPR,Math.max(AY[i]*gret,gry+12)*DPR,0,0,6.2831853);
               ctx.strokeStyle='#ffffff';ctx.globalAlpha=.05*ramp*(1-XT);
               ctx.lineWidth=DPR;ctx.stroke();
             }
             ctx.globalAlpha=1;
           }
-          const onering=vw<640;                  // phones: one tall ellipse, no crossings
           for(const o of L3){
+            if(!isFinite(o.rr))o.rr=1;if(!isFinite(o.fui))o.fui=0;if(!isFinite(o.fvi))o.fvi=0;
+            if(!isFinite(o.hs))o.hs=1;if(!isFinite(o.bs))o.bs=0;
             o.rr+=((1-.4*XT)-o.rr)/12;             // damped retract toward the center
             o.fui+=dt*o.fus; o.fvi+=dt*o.fvs;      // independent float (fades on exit)
             const fl=1-XT;
@@ -1174,14 +1190,15 @@ FEEB tokenId:  576667
             let px,py;
             if(onering){
               const ang=(o.li/L3.length)*6.2831853+lyaw;
-              const orx=Math.min(nfW+70,vw*.5-34)*o.rr, ory=(nfH+110)*o.rr;
+              const orx=Math.max(Math.min(nfW+70,vw*.5-34)*o.rr,nfW+52), ory=Math.max((nfH+110)*o.rr,nfH+62);
               px=ccx+Math.cos(ang)*orx+fx*.6;
               py=ccy+Math.sin(ang)*ory+fy*.6;
             }else{
               const ang=o.phi+lyaw*o.dir;          // revolve
-              px=ccx+Math.cos(ang)*o.ringR*RL*1.2*o.rr+fx;
-              py=ccy+Math.sin(ang)*o.ringR*RL*.68*o.rr+fy;
+              px=ccx+Math.cos(ang)*Math.max(AX[o.ring]*o.rr,grx+14)+fx;
+              py=ccy+Math.sin(ang)*Math.max(AY[o.ring]*o.rr,gry+12)+fy;
             }
+            if(!(isFinite(px)&&isFinite(py)))continue;
             // center no-fly ellipse: never let a token cover $WING — push it out
             const rx=nfW+30+o.sz*.5, ry=nfH+28+o.sz*.5;
             const dx=px-ccx, dy=py-ccy, e=Math.sqrt((dx/rx)*(dx/rx)+(dy/ry)*(dy/ry));
@@ -1222,6 +1239,7 @@ FEEB tokenId:  576667
         if(strip)strip.style.opacity=String(Math.max(0,1-prog*7));
       }
     }
+    }catch(err){}
     if(!reduce)requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
