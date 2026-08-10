@@ -102,6 +102,10 @@ nav.scrolled{background:#121212d9;backdrop-filter:blur(14px);border-bottom-color
 .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--blue);
   box-shadow:0 0 8px var(--blue);animation:pulse 2.4s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+a.eyebrow{text-decoration:none;cursor:pointer;transition:background .2s linear,border-color .2s linear}
+a.eyebrow:hover{background:#5792ff26;border-color:#5792ff66}
+.eyebrow .earr{display:inline-block;transition:transform .2s}
+a.eyebrow:hover .earr{transform:translateX(3px)}
 @media(max-width:480px){.eyebrow{font-size:.72rem;padding:.3rem .8rem}}
 h1{font-family:var(--disp);font-weight:300;letter-spacing:-.03em;
   font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.08}
@@ -553,7 +557,7 @@ footer{margin-top:4.5rem;padding:2rem 0 2.6rem;border-top:1px solid var(--line);
     <div class="orbpin">
       <canvas id="orb"></canvas>
       <div class="heroblock" id="heroblock">
-        <div class="eyebrow rv"><span class="dot"></span>Live on Robinhood Chain · built on pools.trade</div>
+        <a class="eyebrow rv" href="/wing.html"><span class="dot"></span>$WING — the first deal is coming <span class="earr">→</span></a>
         <h1 class="rv">Where launches meet <span class="accent">reach</span>.</h1>
         <p class="rv">Get matched with proven reach.</p>
         <div class="ctarow rv">
