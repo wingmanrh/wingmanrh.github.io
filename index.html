@@ -1164,8 +1164,9 @@ document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%4)
   function show(mode){
     for(const k in views) views[k].classList.toggle('open',k===mode);
     document.body.classList.toggle('noscroll',!!mode);
-    if(mode){views[mode].scrollTop=0;const id=mode==='submit'?'f-name':'r-handle';
-      setTimeout(()=>{const el=$(id);if(el)el.focus();},140);}
+    if(mode){views[mode].scrollTop=0;
+      if(matchMedia('(pointer:fine)').matches){const id=mode==='submit'?'f-handle':'r-handle';
+        setTimeout(()=>{const el=$(id);if(el)el.focus({preventScroll:true});},140);}}
   }
   function route(){const h=location.hash;show(h==='#submit'?'submit':h==='#join'?'join':null);}
   addEventListener('hashchange',route);route();
