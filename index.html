@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Wingman — where launches meet reach</title>
+<title>wingman</title>
 <meta name="description" content="Wingman matches token launches on Robinhood Chain with proven reach. The fee split is locked in an on-chain contract nobody can change — not even us.">
 <meta property="og:title" content="Wingman — where launches meet reach">
 <meta property="og:description" content="Launches on Robinhood Chain, matched with real reach. The split is locked by code nobody can change.">
@@ -60,6 +60,11 @@ nav.scrolled{background:#121212d9;backdrop-filter:blur(14px);border-bottom-color
 .navlinks{display:flex;align-items:center;gap:1.6rem;font-size:.86rem}
 .navlinks a{color:var(--ink-2);transition:color .2s}
 .navlinks a:hover{color:var(--ink)}
+.social-x{background-color:#ffffff26;border-radius:50%;width:32px;height:32px;padding:8px;
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  transition:background-color .2s linear}
+.social-x:hover{background-color:#ffffff40}
+.social-x svg{width:100%;height:100%;display:block}
 @media(max-width:640px){.navlinks a:not(.btn){display:none}}
 
 /* ---------- buttons ---------- */
@@ -400,7 +405,7 @@ body.noscroll{overflow:hidden}
 .scrollhint svg{animation:hintbob 2.2s ease-in-out infinite}
 @keyframes hintbob{50%{transform:translateY(4px)}}
 @media(prefers-reduced-motion:reduce){.scrollhint svg{animation:none}}
-@media(max-width:700px){.hstat{gap:1.8rem}.scrollhint span{display:none}}
+@media(max-width:700px){.hstat{gap:1.4rem}.hstat .value{font-size:clamp(1.02rem,4.4vw,1.7rem)}.scrollhint span{display:none}}
 
 /* ---------- sections ---------- */
 section{padding:4.6rem 0 0}
@@ -537,6 +542,7 @@ footer{margin-top:4.5rem;padding:2rem 0 2.6rem;border-top:1px solid var(--line);
     <a href="#how">How it works</a>
     <a href="#verify">Verify</a>
     <a href="#faq">FAQ</a>
+    <a class="social-x" href="https://x.com/wingmanrh" target="_blank" rel="noopener" title="X" aria-label="Wingman on X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117l11.966 15.644Z"/></svg></a>
     <a class="btn primary" href="#submit">Submit a launch</a>
   </div>
 </nav>
@@ -589,7 +595,7 @@ footer{margin-top:4.5rem;padding:2rem 0 2.6rem;border-top:1px solid var(--line);
         <div class="inner">
           <div class="hstat" aria-label="Measured on-chain">
             <div><div class="label">Traded on Robinhood Chain, last 7 days</div>
-              <div class="value">$3.1B</div></div>
+              <div class="value">$3,100,000,000+</div></div>
             <div><div class="label">Tokens launched daily</div>
               <div class="value" data-count="2500" data-thousands="1" data-suf="+">2,500+</div></div>
           </div>
