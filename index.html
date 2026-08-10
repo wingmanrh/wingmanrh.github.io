@@ -492,7 +492,7 @@ h2{font-family:var(--disp);font-weight:300;letter-spacing:-.02em;font-size:clamp
 #verify .kicker,#verify>h2{text-align:center}
 #how{max-width:1220px;margin-inline:auto;text-align:center}
 #launchers{max-width:1440px;margin-inline:auto}
-#launchers,#how,#verify,#faq,#reach{scroll-margin-top:104px}
+#launchers,#how,#verify,#faq,#reach,#wing{scroll-margin-top:104px}
 .faqlist{max-width:720px;margin:2.6rem auto 0}
 details.faq{background:var(--card);border:1px solid var(--line);border-radius:14px;
   margin-bottom:.7rem;overflow:hidden;transition:border-color .2s,background .2s}
@@ -529,6 +529,31 @@ footer{margin-top:4.5rem;padding:2rem 0 2.6rem;border-top:1px solid var(--line);
 .rv{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.2,.6,.2,1),transform .7s cubic-bezier(.2,.6,.2,1)}
 .rv.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.eyebrow .dot{animation:none}}
+/* ---------- $WING announcement ---------- */
+#wing{text-align:center}
+.wgrad{background:linear-gradient(100deg,#cae4ff,#5792ff 45%,#2470ff);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.wingband{position:relative;max-width:980px;margin:2.4rem auto 0;border-radius:20px;overflow:hidden;
+  isolation:isolate;padding:3.2rem 1.6rem;text-align:center}
+.wingband::before{content:"";position:absolute;inset:0;z-index:-2;
+  background:radial-gradient(ellipse 90% 130% at 50% -20%,#86b4ff 0%,#3d79f7 38%,#1e5cf3 62%,#123a9e 100%)}
+.wingband::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.5;mix-blend-mode:overlay;
+  background-image:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/><feColorMatrix type="saturate" values="0"/></filter><rect width="240" height="240" filter="url(%23n)" opacity="0.55"/></svg>')}
+.wingband .wtag{display:inline-block;font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;
+  text-transform:uppercase;color:#fff;background:#ffffff1a;border:1px solid #ffffff59;
+  border-radius:99px;padding:.3rem .9rem;margin-bottom:1.1rem}
+.wingband h3{font-family:var(--disp);font-weight:300;letter-spacing:-.02em;
+  font-size:clamp(1.6rem,3.2vw,2.3rem);line-height:1.15;color:#fff;margin-bottom:.8rem}
+.wingband p{color:#e8f0ff;max-width:640px;margin:0 auto .6rem}
+.wwarn{font-family:var(--mono);font-size:.78rem;color:#cfe0ff;margin-top:.9rem}
+.wbtn{display:inline-flex;align-items:center;gap:.55rem;margin-top:1.3rem;padding:.72rem 1.55rem;
+  border-radius:99px;font-weight:500;font-size:.92rem;color:#123a9e;background:#fff;
+  box-shadow:0 10px 26px -10px #00000059;transition:transform .2s,filter .2s}
+.wbtn:hover{filter:brightness(.96)}
+.wbtn .arr{transition:transform .2s}
+.wbtn:hover .arr{transform:translateX(3px)}
+@media(max-width:480px){.wingband{padding:2.4rem 1.1rem}}
+
 </style>
 </head>
 <body>
@@ -557,7 +582,7 @@ footer{margin-top:4.5rem;padding:2rem 0 2.6rem;border-top:1px solid var(--line);
     <div class="orbpin">
       <canvas id="orb"></canvas>
       <div class="heroblock" id="heroblock">
-        <a class="eyebrow rv" href="/wing.html"><span class="dot"></span>$WING — the first deal is coming <span class="earr">→</span></a>
+        <a class="eyebrow rv" href="#wing"><span class="dot"></span>$WING — the first deal is coming <span class="earr">→</span></a>
         <h1 class="rv">Where launches meet <span class="accent">reach</span>.</h1>
         <p class="rv">Get matched with proven reach.</p>
         <div class="ctarow rv">
@@ -678,6 +703,22 @@ footer{margin-top:4.5rem;padding:2rem 0 2.6rem;border-top:1px solid var(--line);
       <p>One transaction locks that split into a contract with both wallets baked in. From then on, nobody can change it, not even us.</p></div>
     <div class="step2"><div class="node">3</div><h3>Launch</h3>
       <p>Your token trades on pools.trade. Creator fees flow into the contract, and each side withdraws its share on its own, forever.</p></div>
+  </div>
+</section>
+
+<section id="wing">
+  <div class="kicker rv">The first deal</div>
+  <h2 class="rv"><span class="wgrad">$WING</span> is coming.</h2>
+  <p class="lead rv">Wingman's own token will be the platform's first deal — the promoters' cut locked
+  in the contract before the first trade exists.</p>
+  <div class="wingband rv">
+    <div class="wtag">No date &middot; no countdown &middot; one signal</div>
+    <h3>The ticker drops on @wingmanrh first.</h3>
+    <p>The founding partners post it within the hour. Creator holds zero supply, promoters hold fees —
+    there is no wallet that can dump on you, and you can check the whole deal on-chain before you
+    spend a cent.</p>
+    <p class="wwarn">&#9888; the only real $WING address will be the one posted by @wingmanrh</p>
+    <a class="wbtn" href="https://x.com/wingmanrh" target="_blank" rel="noopener">Follow the launch <span class="arr">&rarr;</span></a>
   </div>
 </section>
 
