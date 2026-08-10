@@ -445,7 +445,9 @@ body.noscroll{overflow:hidden}
 .scrollhint svg{animation:hintbob 2.2s ease-in-out infinite}
 @keyframes hintbob{50%{transform:translateY(4px)}}
 @media(prefers-reduced-motion:reduce){.scrollhint svg{animation:none}}
-@media(max-width:700px){.hstat{gap:1.4rem}.hstat .value{font-size:clamp(1.02rem,4.4vw,1.7rem)}.scrollhint span{display:none}}
+@media(max-width:700px){.hstat{gap:1.4rem}.hstat .value{font-size:clamp(1.02rem,4.4vw,1.7rem)}.scrollhint span{display:none}
+  .hstat .label{font-size:.7rem;margin-bottom:.2rem;line-height:1.35}
+  .herostrip .inner{padding:0 1.4rem 1.5rem}}
 
 /* ---------- sections ---------- */
 section{padding:4.6rem 0 0}
@@ -961,10 +963,14 @@ FEEB tokenId:  576667
     const strip=document.getElementById('herostrip');
     const btnBottom=(hbEl&&cta)?(hbEl.offsetTop+cta.offsetTop+cta.offsetHeight):pinH*.42;
     const stripTop=strip?strip.offsetTop:pinH-120;
-    const bandTop=(btnBottom+52)*DPR, bandBot=(stripTop-14)*DPR;  // more clearance up top
-    R=Math.max(90*DPR,Math.min(Math.min(W,H)*.26,(bandBot-bandTop)/2));
+    const isSm=cv.clientWidth<640;
+    const bandTop=(btnBottom+(isSm?22:52))*DPR, bandBot=(stripTop-(isSm?10:14))*DPR;
+    const half=Math.max(26*DPR,(bandBot-bandTop)/2);
+    R=Math.min(Math.min(W,H)*.26,half);
+    R=Math.max(R,Math.min((isSm?64:90)*DPR,half));   // floor, but never past the band
     CY0=(bandTop+bandBot)/2;};                      // exact center of the free band
   size();addEventListener('resize',size);addEventListener('load',size);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(size);
 
   // ==== faithful port of Morpho's sphere (their exact math, canvas 2D + additive blend) ====
   // helpers ported verbatim
@@ -1085,6 +1091,7 @@ FEEB tokenId:  576667
       const dt=Math.min((t-last)/1000,.05)||0;last=t;
       if(((nfT++)&63)===0)noflySize();         // layout can shift after font swap
       const pe=prog*prog*(3-2*prog);             // smoothstep
+      const C0=Math.max(0,1-1.5*prog);           // Morpho: centered by 2/3 of the dive
       yaw+=dt*(.11+pe*.22);                      // spin up slightly as we dive
       smx+=(tmx-smx)/14;smy+=(tmy-smy)/14;       // Morpho's damped mouse uniform
       mStr+=((mOn&&prog<.4?1:0)-mStr)/14;
@@ -1134,7 +1141,7 @@ FEEB tokenId:  576667
       const fade=prog>.5?Math.max(0,1-(prog-.5)/.22):1;
       if(fade>0){
         const zoom=1+pe*5.6;                     // camera push into the field
-        const cy=CY0+(H*.5-CY0)*pe+say;
+        const cy=H*.5+(CY0-H*.5)*C0+say;
         const RZ=R*zoom,cx=W/2+sax;
         const F=3.4;                             // perspective (their camera z=4.5,fov50)
         const mRad=.13*Math.min(W,H);
@@ -1204,7 +1211,7 @@ FEEB tokenId:  576667
 
       if(!reduce){
         if(mk){
-          mk.style.top=((CY0+(H*.5-CY0)*pe)/H*100)+'%';
+          mk.style.top=((H*.5+(CY0-H*.5)*C0)/H*100)+'%';
           mk.style.transform=`translate(calc(-50% + ${(sax/DPR).toFixed(1)}px), calc(-50% + ${(say/DPR).toFixed(1)}px)) scale(${1+pe*1.5})`;
           mk.style.opacity=String(Math.max(0,1-prog*1.7));
         }
@@ -1297,7 +1304,7 @@ FEEB tokenId:  576667
           // the cursor (their brandZoomDistance 0.05 / brandHoverZoomCap behavior)
           const vw=cv.clientWidth,vh=cv.clientHeight;
           const bloomOK=vw>=640&&prog<.45&&mStr>.01;
-          const bcx=vw/2+sax/DPR,bcy=(CY0+(H*.5-CY0)*pe+say)/DPR;
+          const bcx=vw/2+sax/DPR,bcy=(H*.5+(CY0-H*.5)*C0+say)/DPR;
           const RLs=Math.min(vw,vh)*.60,bmx=smx/DPR,bmy=smy/DPR;
           for(const o of L3){
             if(!isFinite(o.bs))o.bs=0;
