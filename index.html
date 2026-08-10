@@ -159,7 +159,13 @@ h1 .accent{color:var(--blue)}
   font-size:clamp(2.3rem,4.6vw,3.3rem);line-height:1;margin-top:1.35rem}
 .tztag{font-family:var(--mono);font-size:.68rem;letter-spacing:.17em;text-transform:uppercase;
   color:#93a7cf;margin-top:.9rem}
-.tzcenter:hover .tzcenter:hover .achip{position:absolute;left:0;top:0;opacity:0;will-change:transform,opacity;cursor:pointer}
+.tzcenter:hover .tzcenter:hover .rmteaser{display:none}
+@media(prefers-reduced-motion:reduce){
+  .rmteaser{display:flex;justify-content:center;padding:3.5rem 1rem 5rem}
+  .rmteaser .tzcenter{pointer-events:auto}
+  .rmteaser .tzcenter{opacity:1}
+}
+.achip{position:absolute;left:0;top:0;opacity:0;will-change:transform,opacity;cursor:pointer}
 .achip .alogo{position:static;opacity:1;display:block}
 .albl{position:absolute;top:calc(100% + 9px);left:50%;transform:translateX(-50%);
   font-family:var(--mono);font-size:.62rem;letter-spacing:.15em;color:#a9bce4;white-space:nowrap;
@@ -320,6 +326,8 @@ body.noscroll{overflow:hidden}
   border:1px solid #5792ff59;box-shadow:0 0 28px #2470ff4d}
 .fdone h3{font-family:var(--disp);font-weight:300;font-size:1.75rem;letter-spacing:-.02em}
 .fdone p{color:var(--ink-2);max-width:360px;margin:.45rem 0 1.6rem;line-height:1.6}
+.fdone-tip{color:#93a7cf;font-size:.88rem;max-width:400px}
+.fdone .btn{margin:.5rem .3rem 0}
 .fdone p b{color:var(--ink)}
 .raillabel{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
   color:var(--ink-3);margin-bottom:1.2rem}
@@ -631,6 +639,16 @@ footer{margin-top:4.5rem;padding:2rem 0 2.6rem;border-top:1px solid var(--line);
       </div>
     </div>
   </div>
+</div>
+
+
+<!-- static $WING teaser for prefers-reduced-motion (the animated scene needs the scroll runway) -->
+<div class="rmteaser">
+  <a class="tzcenter" href="https://x.com/wingmanrh" target="_blank" rel="noopener" aria-label="$WING — follow @wingmanrh">
+    <span class="tdisc"><svg viewBox="0 0 48 48" width="42" height="42" aria-hidden="true"><path d="M20.6 41.9 C12 36 8 24.5 8.8 10.5 C15.5 18.5 20.5 29 23.3 33 C25.5 22.5 30.5 13 39.5 5.5 C40.2 21 34.8 35 25.8 41.9 C24.6 42.7 21.7 42.7 20.6 41.9 Z" fill="#ffffffb3"/><path d="M21 42 C22 38 22.6 36 23.3 33 C25.5 22.5 30.5 13 39.5 5.5 C40.2 21 34.8 35 25.8 41.9 C24.4 42.7 22.2 42.6 21 42 Z" fill="#ffffff"/></svg></span>
+    <span class="tzname">$WING</span>
+    <span class="tztag">Coming soon<span class="tztag2"> &middot; the platform&rsquo;s first deal</span></span>
+  </a>
 </div>
 
 <section id="launchers">
@@ -1381,7 +1399,10 @@ document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%4)
     form.innerHTML=`<div class="fdone">
       <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4.5 12.5l5 5 10-11" stroke="#5792ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <h3>Got it.</h3>
-      <p>We&#39;ll review and reach out to <b>@${handle}</b> within 24 hours. Keep an eye on your DMs.</p>
+      <p>We&#39;ll review and reach out to <b>@${handle}</b> within 24 hours.</p>
+      <p class="fdone-tip">Want the fast lane? DM us first — that way our reply lands in your
+      inbox instead of your message requests.</p>
+      <a class="btn primary" href="https://x.com/wingmanrh" target="_blank" rel="noopener">DM @wingmanrh <span class="arr">&rarr;</span></a>
       <a class="btn ghost" href="#" data-done-close>Back to the site</a></div>`;
     form.querySelector('[data-done-close]').addEventListener('click',e=>{e.preventDefault();close();});
   };
