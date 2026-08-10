@@ -1055,12 +1055,12 @@ FEEB tokenId:  576667
       fui:Math.random()*6.28,fvi:Math.random()*6.28,
       fus:(.5+Math.random()*.9)*.6,fvs:(.5+Math.random()*.9)*.6,
       fa:4+Math.random()*5,                        // small float amplitude
-      hs:1,hover:false,li:i};
+      hs:1,hover:false,li:i,bs:0,rr:1};
     el.addEventListener('pointerenter',()=>o.hover=true);
     el.addEventListener('pointerleave',()=>o.hover=false);
     return o;
   });
-  let lyaw=Math.random()*6.28;
+  let lyaw=Math.random()*6.28,par={x:0,y:0},gret=1;
   const atext=document.getElementById('atext');
   // no-fly ellipse from the MEASURED text box (estimates break once the copy wraps on mobile)
   let nfW=200,nfH=120;
@@ -1090,6 +1090,14 @@ FEEB tokenId:  576667
       yaw+=dt*(.11+pe*.22);                      // spin up slightly as we dive
       smx+=(tmx-smx)/14;smy+=(tmy-smy)/14;       // Morpho's damped mouse uniform
       mStr+=((mOn&&prog<.4?1:0)-mStr)/14;
+      // Morpho camera pan: the whole scene drifts with the damped cursor
+      // (their u.position -= (pos+mouse*M)/8; M fades to 0 by ~2/3 scroll)
+      const mxN=(mOn&&cv.clientWidth>=640)?(tmx/W-.5):0,
+            myN=(mOn&&cv.clientWidth>=640)?(tmy/H-.5):0;
+      par.x+=(mxN-par.x)/8;par.y+=(myN-par.y)/8;
+      const pAmp=Math.max(0,1-1.5*prog)*.166*Math.min(W,H);
+      const sax=par.x*pAmp,say=par.y*pAmp*.5;
+      lyaw+=dt*.09;                              // rings revolve in every phase (their L+=f*e)
       const tc=t*.00028;                         // cloud-field clock (slow drift)
       ctx.clearRect(0,0,W,H);
 
@@ -1097,8 +1105,8 @@ FEEB tokenId:  576667
       const fade=prog>.5?Math.max(0,1-(prog-.5)/.22):1;
       if(fade>0){
         const zoom=1+pe*5.6;                     // camera push into the field
-        const cy=CY0+(H*.5-CY0)*pe;
-        const RZ=R*zoom,cx=W/2;
+        const cy=CY0+(H*.5-CY0)*pe+say;
+        const RZ=R*zoom,cx=W/2+sax;
         const F=3.4;                             // perspective (their camera z=4.5,fov50)
         const mRad=.13*Math.min(W,H);
         const psz=(2.05+pe*2.2)*DPR;             // base point size (their basePointSize)
@@ -1141,7 +1149,9 @@ FEEB tokenId:  576667
       // phase B — the distant token field: dense, swirling, visibly moving (Morpho-style)
       if(prog>.4){
         const ramp=clamp01((prog-.4)/.28);
-        const cx=W/2,cy=H/2,SR=Math.max(W,H)*.82,swirl=t*.0000345;
+        const arp=clamp01((prog-.55)/.2);        // small parallax kept alive in arrival
+        const cx=W/2+sax+par.x*22*DPR*arp,cy=H/2+say+par.y*16*DPR*arp,
+              SR=Math.max(W,H)*.82,swirl=t*.0000345;
         ctx.globalCompositeOperation='lighter';   // additive glow like the sphere
         for(const s of ST){
           // glacial infall — the whole field drifts toward $WING at the center
@@ -1166,7 +1176,7 @@ FEEB tokenId:  576667
       if(!reduce){
         if(mk){
           mk.style.top=((CY0+(H*.5-CY0)*pe)/H*100)+'%';
-          mk.style.transform=`translate(-50%,-50%) scale(${1+pe*1.5})`;
+          mk.style.transform=`translate(calc(-50% + ${(sax/DPR).toFixed(1)}px), calc(-50% + ${(say/DPR).toFixed(1)}px)) scale(${1+pe*1.5})`;
           mk.style.opacity=String(Math.max(0,1-prog*1.7));
         }
         const hb=document.getElementById('heroblock');
@@ -1176,34 +1186,43 @@ FEEB tokenId:  576667
         // $WING teaser — the popular tokens orbit the centered $WING disc on two
         // rings (Morpho brand-scene: alternating revolve, per-logo float, decay outward)
         if(prog>.5&&L3.length){
-          const vw=cv.clientWidth,vh=cv.clientHeight,ccx=vw/2,ccy=vh/2;
+          const vw=cv.clientWidth,vh=cv.clientHeight;
+          const arp2=clamp01((prog-.55)/.2);
+          const apx=par.x*22*arp2,apy=par.y*16*arp2;
+          const ccx=vw/2+apx,ccy=vh/2+apy;
           const RL=Math.min(vw,vh)*.60;
           const ramp=clamp01((prog-.58)/.16);
+          // exit: rings retract toward $WING and dissolve as you scroll past
+          // (Morpho brandRetractFactor .4, damped like their brandRadiusDaming)
+          const XT=clamp01((prog-.88)/.11);
+          gret+=((1-.4*XT)-gret)/12;
           // faint orbital paths (skipped on small screens, where the text no-fly
           // zone pushes logos off the true ellipse and the line would lie)
           if(vw>=700&&ramp>0){
             for(const rr of [0.46,0.72]){
               ctx.beginPath();
-              ctx.ellipse(W/2,H/2,rr*RL*1.2*DPR,rr*RL*.68*DPR,0,0,6.2831853);
-              ctx.strokeStyle='#ffffff';ctx.globalAlpha=.05*ramp;
+              ctx.ellipse(W/2+apx*DPR,H/2+apy*DPR,rr*RL*1.2*DPR*gret,rr*RL*.68*DPR*gret,0,0,6.2831853);
+              ctx.strokeStyle='#ffffff';ctx.globalAlpha=.05*ramp*(1-XT);
               ctx.lineWidth=DPR;ctx.stroke();
             }
             ctx.globalAlpha=1;
           }
           const onering=vw<640;                  // phones: one tall ellipse, no crossings
           for(const o of L3){
-            o.fui+=dt*o.fus; o.fvi+=dt*o.fvs;      // independent float
-            const fx=Math.sin(o.fui)*o.fa, fy=Math.cos(o.fvi)*o.fa;
+            o.rr+=((1-.4*XT)-o.rr)/12;             // damped retract toward the center
+            o.fui+=dt*o.fus; o.fvi+=dt*o.fvs;      // independent float (fades on exit)
+            const fl=1-XT;
+            const fx=Math.sin(o.fui)*o.fa*fl, fy=Math.cos(o.fvi)*o.fa*fl;
             let px,py;
             if(onering){
               const ang=(o.li/L3.length)*6.2831853+lyaw;
-              const orx=Math.min(nfW+70,vw*.5-34), ory=nfH+110;
+              const orx=Math.min(nfW+70,vw*.5-34)*o.rr, ory=(nfH+110)*o.rr;
               px=ccx+Math.cos(ang)*orx+fx*.6;
               py=ccy+Math.sin(ang)*ory+fy*.6;
             }else{
               const ang=o.phi+lyaw*o.dir;          // revolve
-              px=ccx+Math.cos(ang)*o.ringR*RL*1.2+fx;
-              py=ccy+Math.sin(ang)*o.ringR*RL*.68+fy;
+              px=ccx+Math.cos(ang)*o.ringR*RL*1.2*o.rr+fx;
+              py=ccy+Math.sin(ang)*o.ringR*RL*.68*o.rr+fy;
             }
             // center no-fly ellipse: never let a token cover $WING — push it out
             const rx=nfW+30+o.sz*.5, ry=nfH+28+o.sz*.5;
@@ -1214,13 +1233,32 @@ FEEB tokenId:  576667
             const es=1-Math.pow(1-rp,3);
             o.hs+=((o.hover?1.3:1)-o.hs)/8;        // eased hover zoom (Morpho's 1.3)
             o.el.style.transform=
-              `translate(${(px-o.sz/2).toFixed(1)}px,${(py-o.sz/2).toFixed(1)}px) scale(${(es*o.hs).toFixed(3)})`;
-            o.el.style.opacity=String(rp*(o.ring===0?1:.84));
+              `translate(${(px-o.sz/2).toFixed(1)}px,${(py-o.sz/2).toFixed(1)}px) scale(${(es*o.hs*(1-.8*XT*XT)).toFixed(3)})`;
+            o.el.style.opacity=String(rp*(o.ring===0?1:.84)*(1-.75*XT));
             o.el.style.zIndex=o.hover?9:(3-o.ring);
             o.el.style.pointerEvents=rp>.5?'auto':'none';
           }
-          lyaw+=dt*.09;
-        }else for(const o of L3){o.el.style.opacity='0';o.el.style.pointerEvents='none';}
+        }else{
+          // Morpho: during the sphere phase the hidden tokens bloom faintly near
+          // the cursor (their brandZoomDistance 0.05 / brandHoverZoomCap behavior)
+          const vw=cv.clientWidth,vh=cv.clientHeight;
+          const bloomOK=vw>=640&&prog<.45&&mStr>.01;
+          const bcx=vw/2+sax/DPR,bcy=(CY0+(H*.5-CY0)*pe+say)/DPR;
+          const RLs=Math.min(vw,vh)*.60,bmx=smx/DPR,bmy=smy/DPR;
+          for(const o of L3){
+            const ang=o.phi+lyaw*o.dir;
+            const px=bcx+Math.cos(ang)*o.ringR*RLs*1.2;
+            const py=bcy+Math.sin(ang)*o.ringR*RLs*.68;
+            let tg=0;
+            if(bloomOK)tg=Math.max(0,1-Math.hypot(px-bmx,py-bmy)/64)*.16*mStr;
+            o.bs+=(tg-o.bs)/9;
+            if(o.bs>.006){
+              o.el.style.transform=`translate(${(px-o.sz/2).toFixed(1)}px,${(py-o.sz/2).toFixed(1)}px) scale(${o.bs.toFixed(3)})`;
+              o.el.style.opacity=String(Math.min(1,o.bs*8));
+            }else o.el.style.opacity='0';
+            o.el.style.pointerEvents='none';
+          }
+        }
         if(atext){const ta=clamp01((prog-.60)/.14);atext.style.opacity=String(ta);atext.style.zIndex=2;const tz=atext.firstElementChild;if(tz){tz.style.transform=`scale(${(.96+.04*(1-Math.pow(1-ta,3))).toFixed(4)})`;tz.style.pointerEvents=ta>.65?'auto':'none';}}
         const strip=document.getElementById('herostrip');
         if(strip)strip.style.opacity=String(Math.max(0,1-prog*7));
