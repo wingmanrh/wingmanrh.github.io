@@ -7,7 +7,7 @@
 <title>wingman — founding partners</title>
 <meta property="og:site_name" content="wingman">
 <meta property="og:title" content="founding partners">
-<meta property="og:description" content="Ten seats. Half the platform. Forever — as long as you're building.">
+<meta property="og:description" content="Ten seats. Half of everything. Forever.">
 <meta property="og:url" content="https://wingmanrh.com/p-81464fbb84.html">
 <meta property="og:image" content="https://wingmanrh.com/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -19,15 +19,15 @@
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   :root{
-    --bg:#121212;--bg2:#15181a;--txt:#ffffff;--dim:#ffffff80;--dimmer:#ffffff4d;
+    --bg:#121212;--txt:#ffffff;--dim:#ffffff80;--dimmer:#ffffff4d;
     --blue:#5792ff;--blue2:#2470ff;--glass:#ffffff0d;--glass2:#ffffff1a;--line:#ffffff26;
   }
-  html{scroll-behavior:smooth;overflow-x:clip}
-  body{background:var(--bg);color:var(--txt);font:400 16px/1.65 Inter,system-ui,sans-serif;overflow-x:clip;
+  html{overflow-x:clip}
+  body{background:var(--bg);color:var(--txt);font:400 16px/1.6 Inter,system-ui,sans-serif;overflow-x:clip;
     background-image:radial-gradient(ellipse 900px 500px at 50% -100px,#2470ff14,transparent 60%)}
   a{color:var(--blue);text-decoration:none}
   a:hover{text-decoration:underline}
-  .wrap{max-width:880px;margin:0 auto;padding:0 24px}
+  .wrap{max-width:840px;margin:0 auto;padding:0 24px}
   header{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
   .brand{display:flex;align-items:center;gap:10px;color:var(--txt)}
   .brand:hover{text-decoration:none}
@@ -35,47 +35,40 @@
   .brand span{font:500 1.1rem/1 'Space Grotesk',sans-serif;letter-spacing:-.02em}
   .unlisted{font:500 .68rem/1 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;
     color:var(--dim);border:1px solid var(--line);border-radius:20px;padding:7px 12px}
-  .hero{padding:64px 0 40px;text-align:left}
-  .eyebrow{font:500 .74rem/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:18px}
-  h1{font:300 clamp(2.2rem,6vw,3.4rem)/1.08 'Space Grotesk',sans-serif;letter-spacing:-.03em;margin-bottom:20px}
+  .hero{padding:58px 0 44px;text-align:center}
+  h1{font:300 clamp(2.4rem,7vw,3.8rem)/1.06 'Space Grotesk',sans-serif;letter-spacing:-.03em;margin-bottom:18px}
   h1 em{font-style:normal;color:var(--blue)}
-  .lead{font-size:1.12rem;color:var(--dim);max-width:640px}
+  .lead{font-size:1.1rem;color:var(--dim);max-width:520px;margin:0 auto}
   .lead strong{color:var(--txt);font-weight:600}
-  section{padding:36px 0;border-top:1px solid #ffffff12}
-  h2{font:300 1.55rem/1.2 'Space Grotesk',sans-serif;letter-spacing:-.02em;margin-bottom:8px}
-  .sub{color:var(--dim);margin-bottom:22px;max-width:640px}
-  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-  .card{background:var(--glass);border:1px solid #ffffff17;border-radius:14px;padding:22px}
-  .card h3{font:500 1rem/1.3 Inter,sans-serif;margin-bottom:8px}
-  .card p{color:var(--dim);font-size:.94rem}
-  .big{font:300 2.6rem/1 'Space Grotesk',sans-serif;letter-spacing:-.02em;color:var(--txt);margin-bottom:10px}
-  .big small{font-size:1.1rem;color:var(--dim);letter-spacing:0}
-  .proof{display:grid;gap:10px}
-  .prow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;background:var(--glass);
-    border:1px solid #ffffff17;border-radius:12px;padding:14px 18px;font-size:.94rem}
-  .prow .k{color:var(--dim);min-width:150px}
-  .prow code{font:500 .82rem/1.5 'JetBrains Mono',monospace;color:var(--txt);background:var(--glass2);
-    border-radius:6px;padding:3px 8px;white-space:nowrap;overflow-x:auto;max-width:100%}
-  ul.terms{list-style:none;display:grid;gap:16px}
-  ul.terms li{padding-left:30px;position:relative;color:var(--dim)}
-  ul.terms li strong{color:var(--txt);font-weight:600}
-  ul.terms li::before{content:"";position:absolute;left:0;top:.35em;width:14px;height:14px;border-radius:4px;
-    background:linear-gradient(135deg,var(--blue),var(--blue2))}
-  .honest{background:linear-gradient(180deg,#2470ff14,#2470ff08);border:1px solid #5792ff40;border-radius:16px;padding:26px}
-  .honest h3{font:500 .78rem/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:14px}
-  .honest p{color:var(--dim)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;padding-bottom:8px}
+  .card{display:flex;flex-direction:column;background:var(--glass);border:1px solid #ffffff17;
+    border-radius:14px;padding:24px;text-align:center}
+  .chip{width:44px;height:44px;margin:0 auto 16px;display:grid;place-items:center;border-radius:12px;
+    background:#2470ff1f;border:1px solid #5792ff40}
+  .chip svg{width:20px;height:20px;stroke:var(--blue);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .card h3{font:300 1.45rem/1.2 'Space Grotesk',sans-serif;letter-spacing:-.02em;margin-bottom:8px}
+  .card p{color:var(--dim);font-size:.93rem;margin-bottom:18px}
+  .card .act{margin-top:auto;padding-top:14px;border-top:1px solid #ffffff12;font-size:.86rem}
+  .honest{background:linear-gradient(180deg,#2470ff14,#2470ff08);border:1px solid #5792ff40;border-radius:16px;
+    padding:26px;margin:28px 0;text-align:center}
+  .honest h3{font:500 .74rem/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:12px}
+  .honest p{color:var(--dim);max-width:560px;margin:0 auto}
   .honest p strong{color:var(--txt)}
-  .nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:20px}
-  .num .v{font:300 1.7rem/1.1 'Space Grotesk',sans-serif;letter-spacing:-.02em}
-  .num .l{font-size:.8rem;color:var(--dimmer);margin-top:4px}
-  ol.steps{list-style:none;counter-reset:s;display:grid;gap:14px}
-  ol.steps li{counter-increment:s;display:flex;gap:16px;align-items:flex-start;color:var(--dim)}
-  ol.steps li strong{color:var(--txt)}
+  .nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-top:20px}
+  .num .v{font:300 1.6rem/1.1 'Space Grotesk',sans-serif;letter-spacing:-.02em}
+  .num .l{font-size:.78rem;color:var(--dimmer);margin-top:4px}
+  ol.steps{list-style:none;counter-reset:s;display:grid;gap:12px;max-width:520px;margin:0 auto;padding:30px 0 6px}
+  ol.steps li{counter-increment:s;display:flex;gap:16px;align-items:center;color:var(--dim)}
+  ol.steps li strong{color:var(--txt);font-weight:600}
   ol.steps li::before{content:counter(s);flex:0 0 30px;height:30px;display:grid;place-items:center;
     font:500 .85rem/1 'JetBrains Mono',monospace;color:var(--blue);border:1px solid #5792ff59;border-radius:50%}
-  footer{padding:44px 0 60px;border-top:1px solid #ffffff12;color:var(--dimmer);font-size:.88rem;
+  .rules{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:26px 0 8px}
+  .rule{font-size:.86rem;color:var(--dim);background:var(--glass);border:1px solid #ffffff17;
+    border-radius:20px;padding:9px 16px}
+  footer{margin-top:36px;padding:26px 0 54px;border-top:1px solid #ffffff12;color:var(--dimmer);font-size:.85rem;
     display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;justify-content:space-between}
-  @media(max-width:560px){.hero{padding:44px 0 32px}.prow .k{min-width:100%}}
+  footer code{font:500 .78rem/1 'JetBrains Mono',monospace;color:var(--dim)}
+  @media(max-width:560px){.hero{padding:42px 0 34px}}
 </style>
 </head>
 <body>
@@ -90,99 +83,58 @@
 </header>
 
 <div class="hero">
-  <div class="eyebrow">Founding partners</div>
-  <h1>Ten seats.<br><em>Half the platform.</em><br>Forever — as long as you're building.</h1>
-  <p class="lead">Ten founding partners share <strong>50% of everything Wingman earns</strong>, paid on-chain
-  from a contract anyone can read. Your slice tracks what you bring — so the pool always belongs to the
-  founders still showing up, and a ghost can never dilute you.</p>
+  <h1>Ten seats.<br><em>Half of everything.</em><br>Forever.</h1>
+  <p class="lead">Wingman locks launch deals on-chain and takes <strong>5% of each one</strong>.
+  Ten founding partners split <strong>half of all of it</strong> — paid by a contract nobody can touch.
+  Not even us.</p>
 </div>
 
-<section>
-  <h2>What Wingman is</h2>
-  <p class="sub">A collab-launch layer on Robinhood Chain. It matches token launchers with people who have
-  reach, and locks the agreed fee split into a contract with no owner, no admin, and no way out — so a
-  promoter can't be stiffed and a launcher can't renege. It's live and verifiable today, not a deck:</p>
-  <div class="proof">
-    <div class="prow"><span class="k">The site</span><a href="https://wingmanrh.com" target="_blank" rel="noopener">wingmanrh.com</a></div>
-    <div class="prow"><span class="k">The factory (verified)</span><code>0x32573D34518457D1A6f766539B8A613De0BBd231</code></div>
-    <div class="prow"><span class="k">A real deal, on-chain</span><span>token <code>0x1a994C…7028</code> → split locked 50/50 in <code>0x8Fa1f1…00B5</code></span></div>
-    <div class="prow"><span class="k">Every line of code</span><a href="https://github.com/wingmanrh/splitter" target="_blank" rel="noopener">github.com/wingmanrh/splitter</a></div>
+<div class="cards">
+  <div class="card">
+    <div class="chip"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c2.2.3 3.8 1.8 4.3 4.3"/></svg></div>
+    <h3>Ten seats. That's all.</h3>
+    <p>The whole club. When it's full, it closes forever. No round two.</p>
+    <div class="act"><a href="https://wingmanrh.com" target="_blank" rel="noopener">what wingman is ↗</a></div>
   </div>
-</section>
-
-<section>
-  <h2>Where the money comes from</h2>
-  <p class="sub">Wingman takes nothing on founding deals. On every later deal it takes a <strong style="color:#fff">5%
-  platform cut</strong>, collected on-chain inside the same splitter as everyone else's share.</p>
-  <div class="cards">
-    <div class="card"><div class="big">5%<small> of every paid deal</small></div>
-      <p>The platform's cut, collected by contract — visible to everyone, owed to no one's trust.</p></div>
-    <div class="card"><div class="big">50%<small> to the founders</small></div>
-      <p>Half of all platform revenue flows to the founding ten, split by what each founder brings.</p></div>
-    <div class="card"><div class="big">10<small> seats, then closed</small></div>
-      <p>The ten seats are the whole cohort. Once they're filled, that's it — no fake countdown, no round two.</p></div>
+  <div class="card">
+    <div class="chip"><svg viewBox="0 0 24 24"><path d="M19 5 5 19"/><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg></div>
+    <h3>Half of everything.</h3>
+    <p>Every deal pays wingman 5%. The ten of you split half of that. Your money lands on-chain — you take it yourself.</p>
+    <div class="act"><a href="https://robinhoodchain.blockscout.com/address/0x8Fa1f1a7DB010998285b51C408eFF3E8931300B5" target="_blank" rel="noopener">see a live deal ↗</a></div>
   </div>
-</section>
-
-<section>
-  <h2>What a seat is worth</h2>
-  <ul class="terms">
-    <li><strong>Your slice tracks what you bring.</strong> The pool is split among founders each quarter by
-      the deals you promote and the deals you refer. Bring deals, earn more. Go quiet and your slice flows to
-      the founders still building; show up again and it comes back. The seat is for life — the pay is earned
-      continuously.</li>
-    <li><strong>Nobody rides for free — including us.</strong> The pool always concentrates on whoever's still
-      showing up. You can't be diluted by someone who vanished after week one. That's the point.</li>
-    <li><strong>Paid on-chain, from public data.</strong> Every paid deal's 5% flows into one revenue contract.
-      Each quarter's split is derived from the on-chain deal record — anyone can recompute it, so we can't
-      quietly change the math. You withdraw your own slice; nobody can touch or block it.</li>
-    <li><strong>You're long the whole platform, not one token.</strong> Every deal that clears through Wingman
-      feeds the pool. You're not betting on a single launch — you're tolling all of them.</li>
-  </ul>
-</section>
-
-<section>
-  <div class="honest">
-    <h3>The honest numbers</h3>
-    <p>Platform revenue today is <strong>~$0</strong> — founding deals are free and paid deals haven't started.
-    You're not buying a slice of our current P&amp;L; you're taking a standing claim on the toll of a real,
-    large fee market as it comes online:</p>
-    <div class="nums">
-      <div class="num"><div class="v">$3.1B</div><div class="l">traded on Robinhood Chain, last 7 days</div></div>
-      <div class="num"><div class="v">2,600+</div><div class="l">tokens launched per day</div></div>
-      <div class="num"><div class="v">12 ETH</div><div class="l">top creator fee stream, first 8 days</div></div>
-      <div class="num"><div class="v">0.3–0.95 ETH</div><div class="l">hot launches, day one</div></div>
-    </div>
+  <div class="card">
+    <div class="chip"><svg viewBox="0 0 24 24"><path d="M3 12h4l2.5-6 4 12 2.5-6h5"/></svg></div>
+    <h3>Bring deals, earn more.</h3>
+    <p>Go quiet and your slice flows to the others — until you're back. Nobody rides free, and nobody can dilute you.</p>
+    <div class="act"><a href="https://github.com/wingmanrh/splitter" target="_blank" rel="noopener">read the contract ↗</a></div>
   </div>
-</section>
+</div>
 
-<section>
-  <h2>What we ask — and what we'll never do</h2>
-  <ul class="terms">
-    <li><strong>Be a real reach partner.</strong> Take the deals that fit you, pass on the rest. No quota,
-      no exclusivity, no upfront anything. Your existing rates stay yours — including on deals we bring you.</li>
-    <li><strong>You're never listed.</strong> Your name stays private until you choose to attach it to a deal.</li>
-    <li><strong>No bag-for-shill.</strong> No token allocation in exchange for promotion — your alignment is
-      the revenue share, which keeps you clean and keeps this a trust brand. When you promote, you disclose.</li>
-  </ul>
-</section>
+<div class="honest">
+  <h3>Being honest</h3>
+  <p>Today this pays <strong>$0</strong> — founding deals are free while we grow.
+  What you're claiming is half the toll on everything that comes after:</p>
+  <div class="nums">
+    <div class="num"><div class="v">$3.1B</div><div class="l">traded on Robinhood Chain, last 7 days</div></div>
+    <div class="num"><div class="v">2,600+</div><div class="l">tokens launched every day</div></div>
+    <div class="num"><div class="v">12 ETH</div><div class="l">top creator fee stream, first 8 days</div></div>
+  </div>
+</div>
 
-<section>
-  <h2>How a seat gets confirmed</h2>
-  <ol class="steps">
-    <li><span><strong>We talk.</strong> If it's a fit, you're in the founding ten.</span></li>
-    <li><span><strong>When the cohort is full</strong>, we deploy the founder revenue contract with all ten
-      addresses baked in — and hand you the address so you can verify your own seat.</span></li>
-    <li><span><strong>From then on</strong>, every paid deal feeds the pool, and each quarter it pays the
-      founders by what they brought — you included, for as long as you're bringing.</span></li>
-  </ol>
-  <p class="sub" style="margin-top:22px">No money ever moves from you. Worst case, Wingman goes nowhere and
-  you've spent one conversation. Best case, you hold a standing claim on the fee layer of an entire chain —
-  one that pays you exactly as much as you keep building it.</p>
-</section>
+<ol class="steps">
+  <li><span><strong>We talk.</strong> If it fits, you're in.</span></li>
+  <li><span><strong>The ten fill up</strong> — the contract goes live with your address baked in.</span></li>
+  <li><span><strong>Every deal feeds the pool.</strong> You pull your slice yourself, forever.</span></li>
+</ol>
+
+<div class="rules">
+  <span class="rule">Costs you nothing — no quota, no exclusivity</span>
+  <span class="rule">You're never listed. Private until you choose</span>
+  <span class="rule">No bags to shill — your cut is revenue, not tokens</span>
+</div>
 
 <footer>
-  <span>© wingman — deals locked by contract, not trust.</span>
+  <span>factory <code>0x32573D34518457D1A6f766539B8A613De0BBd231</code></span>
   <span><a href="https://x.com/wingmanrh" target="_blank" rel="noopener">@wingmanrh</a> · <a href="https://wingmanrh.com">wingmanrh.com</a></span>
 </footer>
 
