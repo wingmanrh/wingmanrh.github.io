@@ -159,12 +159,7 @@ h1 .accent{color:var(--blue)}
   font-size:clamp(2.3rem,4.6vw,3.3rem);line-height:1;margin-top:1.35rem}
 .tztag{font-family:var(--mono);font-size:.68rem;letter-spacing:.17em;text-transform:uppercase;
   color:#93a7cf;margin-top:.9rem}
-.tzcta{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;color:#8ea6d8;margin-top:1.5rem;
-  display:inline-flex;align-items:center;gap:.45rem;transition:color .25s}
-.tzcta i{font-style:normal;transition:transform .25s}
-.tzcenter:hover .tzcta{color:#fff}
-.tzcenter:hover .tzcta i{transform:translateY(2px)}
-.achip{position:absolute;left:0;top:0;opacity:0;will-change:transform,opacity;cursor:pointer}
+.tzcenter:hover .tzcenter:hover .achip{position:absolute;left:0;top:0;opacity:0;will-change:transform,opacity;cursor:pointer}
 .achip .alogo{position:static;opacity:1;display:block}
 .albl{position:absolute;top:calc(100% + 9px);left:50%;transform:translateX(-50%);
   font-family:var(--mono);font-size:.62rem;letter-spacing:.15em;color:#a9bce4;white-space:nowrap;
@@ -390,7 +385,6 @@ body.noscroll{overflow:hidden}
 .fixcard .fixmore{margin-top:auto;width:100%;padding:.95rem 0 0;border-top:1px solid var(--line);
   display:flex;justify-content:center}
 @media(max-width:820px){.fixgrid{grid-template-columns:1fr;max-width:420px}}
-.wingrid{max-width:980px}
 
 /* ---------- how-it-works connected timeline (Morpho hiring-process spirit) ---------- */
 .steps2{display:flex;gap:1rem;margin-top:3rem;max-width:1040px;margin-left:auto;margin-right:auto}
@@ -525,7 +519,7 @@ h2{font-family:var(--disp);font-weight:300;letter-spacing:-.02em;font-size:clamp
 #verify .kicker,#verify>h2{text-align:center}
 #how{max-width:1220px;margin-inline:auto;text-align:center}
 #launchers{max-width:1440px;margin-inline:auto}
-#launchers,#how,#verify,#faq,#reach,#wing{scroll-margin-top:104px}
+#launchers,#how,#verify,#faq,#reach{scroll-margin-top:104px}
 .faqlist{max-width:720px;margin:2.6rem auto 0}
 details.faq{background:var(--card);border:1px solid var(--line);border-radius:14px;
   margin-bottom:.7rem;overflow:hidden;transition:border-color .2s,background .2s}
@@ -563,30 +557,7 @@ footer{margin-top:4.5rem;padding:2rem 0 2.6rem;border-top:1px solid var(--line);
 .rv.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.eyebrow .dot{animation:none}}
 /* ---------- $WING announcement ---------- */
-#wing{text-align:center}
-.wgrad{background:linear-gradient(100deg,#cae4ff,#5792ff 45%,#2470ff);
-  -webkit-background-clip:text;background-clip:text;color:transparent}
-.wingband{position:relative;max-width:980px;margin:2.4rem auto 0;border-radius:20px;overflow:hidden;
-  isolation:isolate;padding:3.2rem 1.6rem;text-align:center}
-.wingband::before{content:"";position:absolute;inset:0;z-index:-2;
-  background:radial-gradient(ellipse 90% 130% at 50% -20%,#86b4ff 0%,#3d79f7 38%,#1e5cf3 62%,#123a9e 100%)}
-.wingband::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.5;mix-blend-mode:overlay;
-  background-image:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/><feColorMatrix type="saturate" values="0"/></filter><rect width="240" height="240" filter="url(%23n)" opacity="0.55"/></svg>')}
-.wingband .wtag{display:inline-block;font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;
-  text-transform:uppercase;color:#fff;background:#ffffff1a;border:1px solid #ffffff59;
-  border-radius:99px;padding:.3rem .9rem;margin-bottom:1.1rem}
-.wingband h3{font-family:var(--disp);font-weight:300;letter-spacing:-.02em;
-  font-size:clamp(1.6rem,3.2vw,2.3rem);line-height:1.15;color:#fff;margin-bottom:.8rem}
-.wingband p{color:#e8f0ff;max-width:640px;margin:0 auto .6rem}
-.wwarn{font-family:var(--mono);font-size:.78rem;color:#cfe0ff;margin-top:.9rem}
-.wbtn{display:inline-flex;align-items:center;gap:.55rem;margin-top:1.3rem;padding:.72rem 1.55rem;
-  border-radius:99px;font-weight:500;font-size:.92rem;color:#123a9e;background:#fff;
-  box-shadow:0 10px 26px -10px #00000059;transition:transform .2s,filter .2s}
-.wbtn:hover{filter:brightness(.96)}
-.wbtn .arr{transition:transform .2s}
-.wbtn:hover .arr{transform:translateX(3px)}
-@media(max-width:480px){.wingband{padding:2.4rem 1.1rem}
-  .wingband .wtag{font-size:.6rem;letter-spacing:.1em}}
+@media(max-width:480px){  }
 
 </style>
 </head>
@@ -616,7 +587,7 @@ footer{margin-top:4.5rem;padding:2rem 0 2.6rem;border-top:1px solid var(--line);
     <div class="orbpin">
       <canvas id="orb"></canvas>
       <div class="heroblock" id="heroblock">
-        <a class="eyebrow rv" href="#wing"><span class="dot"></span>$WING — the first deal is coming <span class="earr">→</span></a>
+        <a class="eyebrow rv" href="https://x.com/wingmanrh" target="_blank" rel="noopener"><span class="dot"></span>$WING — the first deal is coming <span class="earr">→</span></a>
         <h1 class="rv">Where launches meet <span class="accent">reach</span>.</h1>
         <p class="rv">Get matched with proven reach.</p>
         <div class="ctarow rv">
@@ -638,11 +609,10 @@ footer{margin-top:4.5rem;padding:2rem 0 2.6rem;border-top:1px solid var(--line);
         <div class="achip" data-ring="1" data-k="3" data-n="5"><img class="alogo" src="data:image/jpeg;base64,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" alt="INDEX" draggable="false"><span class="albl">INDEX</span></div>
         <div class="achip" data-ring="1" data-k="4" data-n="5"><img class="alogo" src="data:image/jpeg;base64,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" alt="IF" draggable="false"><span class="albl">IF</span></div>
         <div class="atext" id="atext">
-          <a class="tzcenter" href="#wing" aria-label="$WING — the platform's first deal">
+          <a class="tzcenter" href="https://x.com/wingmanrh" target="_blank" rel="noopener" aria-label="$WING — follow @wingmanrh">
             <span class="tdisc"><svg viewBox="0 0 48 48" width="42" height="42" aria-hidden="true"><path d="M20.6 41.9 C12 36 8 24.5 8.8 10.5 C15.5 18.5 20.5 29 23.3 33 C25.5 22.5 30.5 13 39.5 5.5 C40.2 21 34.8 35 25.8 41.9 C24.6 42.7 21.7 42.7 20.6 41.9 Z" fill="#ffffffb3"/><path d="M21 42 C22 38 22.6 36 23.3 33 C25.5 22.5 30.5 13 39.5 5.5 C40.2 21 34.8 35 25.8 41.9 C24.4 42.7 22.2 42.6 21 42 Z" fill="#ffffff"/></svg></span>
             <span class="tzname">$WING</span>
             <span class="tztag">Coming soon<span class="tztag2"> &middot; the platform&rsquo;s first deal</span></span>
-            <span class="tzcta">See the plan <i>&darr;</i></span>
           </a>
         </div>
       </div>
@@ -728,45 +698,6 @@ footer{margin-top:4.5rem;padding:2rem 0 2.6rem;border-top:1px solid var(--line);
       <p>One transaction locks that split into a contract with both wallets baked in. From then on, nobody can change it, not even us.</p></div>
     <div class="step2"><div class="node">3</div><h3>Launch</h3>
       <p>Your token trades on pools.trade. Creator fees flow into the contract, and each side withdraws its share on its own, forever.</p></div>
-  </div>
-</section>
-
-<section id="wing">
-  <div class="kicker rv">The first deal</div>
-  <h2 class="rv"><span class="wgrad">$WING</span> is coming.</h2>
-  <p class="lead rv">Wingman's own token will be the platform's first deal — the promoters' cut locked
-  in the contract before the first trade exists.</p>
-
-  <div class="fixgrid wingrid">
-    <div class="fixcard rv">
-      <div class="fichip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5792ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"/><path d="M6.4 6.4l11.2 11.2"/></svg></div>
-      <div class="fixtag">can it rug?</div>
-      <h4>No wallet can dump on you.</h4>
-      <p>The creator holds zero $WING. There&rsquo;s nothing to dump &mdash; every token out there was bought, not granted.</p>
-      <div class="fixmore"><a class="more" href="#faq">Read the FAQ <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h13M12 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
-    </div>
-    <div class="fixcard rv">
-      <div class="fichip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5792ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.8" cy="7.8" r="2.7"/><circle cx="16.2" cy="16.2" r="2.7"/><path d="M6 18L18 6"/></svg></div>
-      <div class="fixtag">why promote it?</div>
-      <h4>Partners earn fees, not tokens.</h4>
-      <p>Their cut of creator fees is locked in the contract before launch. They earn when $WING trades &mdash; never by selling on you.</p>
-      <div class="fixmore"><a class="more" href="#how">How the lock works <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h13M12 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
-    </div>
-    <div class="fixcard rv">
-      <div class="fichip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5792ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M8.4 11l1.9 1.9 3.4-3.6"/><path d="M15.8 15.8L20 20"/></svg></div>
-      <div class="fixtag">why believe it?</div>
-      <h4>Check the deal yourself.</h4>
-      <p>The whole deal sits on-chain before the first trade. Anyone can verify the split in one command.</p>
-      <div class="fixmore"><a class="more" href="#verify">Verify it <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h13M12 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
-    </div>
-  </div>
-
-  <div class="wingband rv">
-    <div class="wtag">No date &middot; no countdown &middot; one signal</div>
-    <h3>The ticker drops on @wingmanrh first.</h3>
-    <p>The founding partners post it within the hour.</p>
-    <p class="wwarn">&#9888; the only real $WING address will be the one posted by @wingmanrh</p>
-    <a class="wbtn" href="https://x.com/wingmanrh" target="_blank" rel="noopener">Follow the launch <span class="arr">&rarr;</span></a>
   </div>
 </section>
 
@@ -1092,12 +1023,13 @@ FEEB tokenId:  576667
   const noflySize=()=>{if(!atext)return;let w=0,t=1e9,b=-1e9;
     for(const ch of atext.children){if(!ch.offsetHeight)continue;
       w=Math.max(w,ch.offsetWidth);t=Math.min(t,ch.offsetTop);b=Math.max(b,ch.offsetTop+ch.offsetHeight);}
-    if(w>0&&b>t){nfW=w/2;nfH=(b-t)/2;}};
+    if(w>0&&b>t){nfW=Math.max(150,w/2);nfH=Math.max(88,(b-t)/2);}};
   noflySize();addEventListener('resize',noflySize);addEventListener('load',noflySize);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(noflySize);
   const clamp01=v=>Math.min(1,Math.max(0,v));
 
   const TILT=-0.14,cT=Math.cos(TILT),sT=Math.sin(TILT);
-  let yaw=0,last=0,visible=true;
+  let yaw=0,last=0,visible=true,nfT=0;
   // Morpho-style hover: damped cursor follow + proximity point boost
   let tmx=0,tmy=0,smx=0,smy=0,mStr=0,mOn=false;
   addEventListener('pointermove',e=>{
@@ -1111,6 +1043,7 @@ FEEB tokenId:  576667
   function frame(t){
     if(visible){
       const dt=Math.min((t-last)/1000,.05)||0;last=t;
+      if(((nfT++)&63)===0)noflySize();         // layout can shift after font swap
       const pe=prog*prog*(3-2*prog);             // smoothstep
       yaw+=dt*(.11+pe*.22);                      // spin up slightly as we dive
       smx+=(tmx-smx)/14;smy+=(tmy-smy)/14;       // Morpho's damped mouse uniform
