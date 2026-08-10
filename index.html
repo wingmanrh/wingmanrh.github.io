@@ -950,6 +950,11 @@ FEEB tokenId:  576667
   const DPR=Math.min(devicePixelRatio||1,2);
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(!reduce)stage.classList.add('zoom');       // 300vh scroll runway
+  // teaser ownership is decided ONCE at load: media queries flip live but the
+  // animation mode doesn't — an OS reduce-motion toggle mid-session would
+  // otherwise show BOTH the animated and the static teaser at once.
+  const rmEl=document.querySelector('.rmteaser');
+  if(rmEl)rmEl.style.display=reduce?'flex':'none';
 
   let W,H,R,CY0;
   const size=()=>{W=Math.round(cv.clientWidth*DPR);H=Math.round(cv.clientHeight*DPR);
