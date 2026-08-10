@@ -10,7 +10,11 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@wingmanrh">
-<!-- at hosting: add og:url + og:image (hosted banner URL) -->
+<meta property="og:url" content="https://wingmanrh.com/">
+<meta property="og:image" content="https://wingmanrh.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://wingmanrh.com/og.png">
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path d="M20.6 41.9 C12 36 8 24.5 8.8 10.5 C15.5 18.5 20.5 29 23.3 33 C25.5 22.5 30.5 13 39.5 5.5 C40.2 21 34.8 35 25.8 41.9 C24.6 42.7 21.7 42.7 20.6 41.9 Z" fill="%232470ff"/><path d="M21 42 C22 38 22.6 36 23.3 33 C25.5 22.5 30.5 13 39.5 5.5 C40.2 21 34.8 35 25.8 41.9 C24.4 42.7 22.2 42.6 21 42 Z" fill="%235792ff"/></svg>'>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -465,6 +469,7 @@ h2{font-family:var(--disp);font-weight:300;letter-spacing:-.02em;font-size:clamp
   max-width:560px;margin:2.6rem auto 0}
 .factory:hover{border-color:var(--line-hi);background:var(--card-hi)}
 .factory span{font-size:.85rem;color:var(--ink-2)}
+.factory code{white-space:nowrap}
 .factory code{font-family:var(--mono);font-size:.8rem;color:var(--blue-pale);
   margin-left:auto;word-break:break-all}
 .factory svg{flex:none;color:var(--ink-3)}
@@ -582,9 +587,9 @@ footer{margin-top:4.5rem;padding:2rem 0 2.6rem;border-top:1px solid var(--line);
       </div>
       <div class="herostrip" id="herostrip">
         <div class="inner">
-          <div class="hstat" aria-label="Measured on-chain, 24h">
-            <div><div class="label">Traded in the last 24h</div>
-              <div class="value" data-count="16009912" data-pre="$" data-thousands="1">$16,009,912</div></div>
+          <div class="hstat" aria-label="Measured on-chain">
+            <div><div class="label">Traded on Robinhood Chain, last 7 days</div>
+              <div class="value">$3.1B</div></div>
             <div><div class="label">Tokens launched daily</div>
               <div class="value" data-count="2500" data-thousands="1" data-suf="+">2,500+</div></div>
           </div>
@@ -716,7 +721,7 @@ FEEB tokenId:  576667
   </div>
 
   <a class="factory rv" href="https://robinhoodchain.blockscout.com/address/0x32573D34518457D1A6f766539B8A613De0BBd231" target="_blank" rel="noopener">
-    <span>Factory contract</span>
+    <span>The contract behind every deal</span>
     <code>0x32573D…d231</code>
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H9M17 7v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </a>
