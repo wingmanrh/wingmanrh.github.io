@@ -1030,6 +1030,8 @@ FEEB tokenId:  576667
   };
   console.info('wingman teaser r5-canvas');
   let lyaw=Math.random()*6.28,par={x:0,y:0},gret=1;
+  // shooting stars — rare, quiet streaks behind everything
+  const METS=[];let metNext=0;
   const atext=document.getElementById('atext');
   // no-fly ellipse from the MEASURED text box (estimates break once the copy wraps on mobile)
   let nfW=200,nfH=120;
@@ -1078,6 +1080,37 @@ FEEB tokenId:  576667
       lyaw+=dt*.09;                              // rings revolve in every phase (their L+=f*e)
       const tc=t*.00028;                         // cloud-field clock (slow drift)
       ctx.clearRect(0,0,W,H);
+
+      // shooting stars: one thin streak every ~5–14s, fading tail, additive
+      if(metNext===0)metNext=t+2000+Math.random()*6000;
+      if(t>metNext&&METS.length<2){
+        const fromLeft=Math.random()<.5;
+        const ang=(.35+Math.random()*.5)*(fromLeft?1:Math.PI-1);   // shallow diagonal, downward
+        const spd=(.55+Math.random()*.45)*Math.max(W,H);           // px per life
+        METS.push({x:(.08+Math.random()*.84)*W,y:(.04+Math.random()*.5)*H,
+          vx:Math.cos(ang)*spd*(fromLeft?1:1),vy:Math.abs(Math.sin(ang))*spd*.55,
+          born:t,life:950+Math.random()*550,len:(60+Math.random()*90)*DPR});
+        metNext=t+5000+Math.random()*9000;
+      }
+      for(let i=METS.length-1;i>=0;i--){
+        const m=METS[i],age=(t-m.born)/m.life;
+        if(age>=1){METS.splice(i,1);continue;}
+        const fade=(age<.18?age/.18:1-(age-.18)/.82)*.5;
+        const hx=m.x+m.vx*age,hy=m.y+m.vy*age;
+        const vlen=Math.hypot(m.vx,m.vy)||1;
+        const tx=hx-m.vx/vlen*m.len,ty=hy-m.vy/vlen*m.len;
+        if(hx>-40&&hx<W+40&&hy>-40&&hy<H+40){
+          ctx.save();ctx.globalCompositeOperation='lighter';
+          const g=ctx.createLinearGradient(hx,hy,tx,ty);
+          g.addColorStop(0,'rgba(234,241,255,'+fade+')');
+          g.addColorStop(1,'rgba(87,146,255,0)');
+          ctx.strokeStyle=g;ctx.lineWidth=1.1*DPR;ctx.lineCap='round';
+          ctx.beginPath();ctx.moveTo(hx,hy);ctx.lineTo(tx,ty);ctx.stroke();
+          ctx.globalAlpha=fade;ctx.fillStyle='#eaf1ff';
+          ctx.beginPath();ctx.arc(hx,hy,1.1*DPR,0,6.2831853);ctx.fill();
+          ctx.restore();
+        }
+      }
 
       // phase A — the sphere (dissolves as we pass through the far side)
       const fade=prog>.5?Math.max(0,1-(prog-.5)/.22):1;
