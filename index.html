@@ -1160,7 +1160,7 @@ FEEB tokenId:  576667
           // exit: rings retract toward $WING and dissolve as you scroll past
           // (Morpho brandRetractFactor .4, damped like their brandRadiusDaming)
           const XT=clamp01((prog-.88)/.11);
-          gret+=((1-.4*XT)-gret)/12;
+          gret=1-.4*XT;               // pure function of scroll — no lag, no desync
           const onering=vw<640;                  // phones: one tall ellipse, no crossings
           // ring semi-axes: viewport-scaled but NEVER tighter than the text no-fly
           // zone — on short windows the raw ellipse dives inside it and chips get
@@ -1183,7 +1183,7 @@ FEEB tokenId:  576667
           for(const o of L3){
             if(!isFinite(o.rr))o.rr=1;if(!isFinite(o.fui))o.fui=0;if(!isFinite(o.fvi))o.fvi=0;
             if(!isFinite(o.hs))o.hs=1;if(!isFinite(o.bs))o.bs=0;
-            o.rr+=((1-.4*XT)-o.rr)/12;             // damped retract toward the center
+            o.rr=gret;                             // scroll-linked retract (identical to the drawn lines)
             o.fui+=dt*o.fus; o.fvi+=dt*o.fvs;      // independent float (fades on exit)
             const fl=1-XT;
             const fx=Math.sin(o.fui)*o.fa*fl, fy=Math.cos(o.fvi)*o.fa*fl;
