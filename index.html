@@ -522,6 +522,34 @@ h2{font-family:var(--disp);font-weight:300;letter-spacing:-.02em;font-size:clamp
 .factory svg{flex:none;color:var(--ink-3)}
 @media(max-width:620px){.vgrid{grid-template-columns:1fr}}
 
+/* ---------- fee routing (where the fees go) ---------- */
+#routing{max-width:1220px;margin-inline:auto}
+#routing .kicker,#routing>h2{text-align:center}
+.rtlede{color:#c7d0de;font-size:1.05rem;line-height:1.65;text-align:center;
+  max-width:660px;margin:1.4rem auto 0}
+.rtgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;max-width:1180px;margin:2.6rem auto 0}
+.rtcard{display:flex;flex-direction:column;align-items:center;text-align:center;
+  background:#ffffff0d;border:1px solid var(--line);border-radius:12px;
+  padding:2.1rem 1.4rem 1.05rem;transition:border-color .25s,transform .25s,background .25s}
+.rtcard:hover{border-color:#5792ff55;transform:translateY(-2px);background:#ffffff12}
+.rtchip{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  margin-bottom:1.35rem;background:#5792ff1f;border:1px solid #5792ff40;box-shadow:0 4px 16px -8px #2470ff88}
+.rttag{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:.6rem}
+.rtcard h4{font-family:var(--disp);font-weight:300;font-size:1.3rem;letter-spacing:-.02em;line-height:1.2;margin-bottom:.55rem}
+.rtcard p{color:var(--ink-2);font-size:.92rem;line-height:1.6;max-width:250px;margin-bottom:1.4rem}
+.rtfoot{margin-top:auto;width:100%;padding:.9rem 0 0;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.rtproof{display:flex;align-items:center;gap:.7rem;padding:.9rem 1.15rem;border-radius:12px;
+  background:var(--card);border:1px solid var(--line);transition:border-color .2s,background .2s;
+  max-width:560px;margin:2.6rem auto 0}
+.rtproof:hover{border-color:var(--line-hi);background:var(--card-hi)}
+.rtproof span{font-size:.85rem;color:var(--ink-2)}
+.rtproof code{font-family:var(--mono);font-size:.8rem;color:var(--blue-pale);margin-left:auto;white-space:nowrap}
+.rtproof svg{flex:none;color:var(--ink-3)}
+@media(max-width:1020px){.rtgrid{grid-template-columns:1fr 1fr;max-width:760px}}
+@media(max-width:520px){.rtproof{flex-wrap:wrap}.rtproof span{flex:1 1 100%}.rtproof code{margin-left:0}}
+@media(max-width:600px){.rtgrid{grid-template-columns:1fr;max-width:420px}}
+
 /* ---------- faq ---------- */
 #faq{max-width:760px;margin-inline:auto}
 #faq>.kicker,#faq>h2{text-align:center}
@@ -529,7 +557,7 @@ h2{font-family:var(--disp);font-weight:300;letter-spacing:-.02em;font-size:clamp
 #verify .kicker,#verify>h2{text-align:center}
 #how{max-width:1220px;margin-inline:auto;text-align:center}
 #launchers{max-width:1440px;margin-inline:auto}
-#launchers,#how,#verify,#faq,#reach{scroll-margin-top:104px}
+#launchers,#how,#routing,#verify,#faq,#reach{scroll-margin-top:104px}
 .faqlist{max-width:720px;margin:2.6rem auto 0}
 details.faq{background:var(--card);border:1px solid var(--line);border-radius:14px;
   margin-bottom:.7rem;overflow:hidden;transition:border-color .2s,background .2s}
@@ -719,6 +747,48 @@ footer{margin-top:4.5rem;padding:2rem 0 2.6rem;border-top:1px solid var(--line);
     <div class="step2"><div class="node">3</div><h3>Launch</h3>
       <p>Your token trades on pools.trade. Creator fees flow into the contract, and each side withdraws its share on its own, forever.</p></div>
   </div>
+</section>
+
+<section id="routing">
+  <div class="kicker rv">Where the fees go</div>
+  <h2 class="rv">Your fees, sent where you promised.<br>Locked by contract, not by tweet.</h2>
+  <p class="rtlede rv">You pick who gets paid before launch. Up to ten wallets,
+  each with its own share. After that, nobody can change it. Not you, not us.</p>
+  <div class="rtgrid">
+    <div class="rtcard rv">
+      <div class="rtchip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5792ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.6 9.6h2.9l8-4.6v14l-8-4.6H4.6A1.6 1.6 0 0 1 3 12.8v-1.6a1.6 1.6 0 0 1 1.6-1.6z"/><path d="M19 9.4a4.2 4.2 0 0 1 0 5.2"/></svg></div>
+      <div class="rttag">for your promoter</div>
+      <h4>Pay the person who brings the crowd.</h4>
+      <p>Their cut lands in their wallet, trade after trade. No chasing, no trust needed.</p>
+      <div class="rtfoot">locked before the launch</div>
+    </div>
+    <div class="rtcard rv">
+      <div class="rtchip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5792ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6.3" rx="7" ry="2.7"/><path d="M5 6.3v5.6c0 1.5 3.1 2.7 7 2.7s7-1.2 7-2.7V6.3"/><path d="M5 11.9v5.6c0 1.5 3.1 2.7 7 2.7s7-1.2 7-2.7v-5.6"/></svg></div>
+      <div class="rttag">for your community</div>
+      <h4>Fill a community pot.</h4>
+      <p>Send a share to a wallet your community holds. Every trade makes the pot bigger.</p>
+      <div class="rtfoot">shares fixed forever</div>
+    </div>
+    <div class="rtcard rv">
+      <div class="rtchip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5792ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.6l-6.5-6.3a4.05 4.05 0 0 1 5.7-5.7l.8.8.8-.8a4.05 4.05 0 0 1 5.7 5.7z"/></svg></div>
+      <div class="rttag">for a cause</div>
+      <h4>Give with every trade.</h4>
+      <p>Name a charity’s wallet and it gets paid every time your token trades.</p>
+      <div class="rtfoot">pays out even if you vanish</div>
+    </div>
+    <div class="rtcard rv">
+      <div class="rtchip"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5792ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7.5" width="16" height="11.5" rx="2"/><path d="M9 7.5V6.4A1.9 1.9 0 0 1 10.9 4.5h2.2A1.9 1.9 0 0 1 15 6.4v1.1M4 12.5h16"/></svg></div>
+      <div class="rttag">for your team</div>
+      <h4>Payroll that pays itself.</h4>
+      <p>Split the team’s share across their wallets, each with its own fixed cut.</p>
+      <div class="rtfoot">2–10 wallets per split</div>
+    </div>
+  </div>
+  <a class="rtproof rv" href="https://robinhoodchain.blockscout.com/address/0x8Fa1f1a7DB010998285b51C408eFF3E8931300B5" target="_blank" rel="noopener">
+    <span>Talk is cheap. Here’s a live one you can read</span>
+    <code>0x8Fa1f1…00B5</code>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M17 7H9M17 7v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
 </section>
 
 <section id="verify">
