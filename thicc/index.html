@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THICC</title>
+<meta name="description" content="The locked liquidity leaderboard for Robinhood Chain. Every pools.trade token locks its pool forever. THICC ranks them by the real ETH inside.">
+<meta property="og:title" content="THICC">
+<meta property="og:description" content="The locked liquidity leaderboard for Robinhood Chain.">
+<meta property="og:url" content="https://wingmanrh.com/thicc/">
+<meta property="og:image" content="https://wingmanrh.com/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%232973ff'/%3E%3Ctext x='24' y='33' font-size='26' font-family='monospace' font-weight='700' text-anchor='middle' fill='white'%3ET%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* tokens: Morpho docs dark theme, extracted 2026-08-13 */
+:root{
+  --bg:#090909; --fg:#fffffff2; --card:#101011; --border:#ffffff12;
+  --muted:#fafafa14; --muted-fg:#ffffff80; --secondary:#fafafa1a; --secondary-fg:#ffffffb2;
+  --primary:#2973ff; --ring:#5792ff;
+  --info:#5792ff14; --info-fg:#5792fff2;
+  --success:#39a69914; --success-fg:#39a699f2;
+  --warning:#ffb13d14; --warning-fg:#ffb13df2;
+  --destructive:#ff779214; --destructive-fg:#ff7792f2;
+  --shadow-sm:0 1px 1px 0 #0000001a,0 0 2px 0 #00000014,0 -1px 2px 0 #06090b0a;
+  --ease:cubic-bezier(.4,0,.2,1);
+  --sans:"Space Grotesk",ui-sans-serif,system-ui,sans-serif;
+  --body:"Inter",ui-sans-serif,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:1rem;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+::selection{background:#2973ff55}
+html{scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+
+/* nav (56px sticky blur, hairline border) */
+nav{position:sticky;top:0;z-index:50;height:3.5rem;display:flex;align-items:center;gap:.625rem;
+  padding:0 1.5rem;border-bottom:1px solid var(--border);background:#090909cc;backdrop-filter:blur(8px)}
+nav .brand{display:inline-flex;align-items:center;gap:.625rem;font-family:var(--sans);font-weight:600;font-size:.938rem}
+nav .brand svg{display:block}
+nav .sep{color:var(--muted-fg);font-weight:300}
+nav .prod{font-family:var(--mono);font-size:.813rem;letter-spacing:.08em;color:var(--info-fg)}
+nav .links{margin-left:auto;display:flex;gap:.5rem}
+nav .links a{display:inline-flex;align-items:center;height:1.75rem;padding:0 .75rem;border-radius:8px;
+  font-size:.75rem;line-height:1;color:var(--fg);border:1px solid transparent;
+  transition:background-color .15s var(--ease),filter .15s var(--ease)}
+nav .links a:hover{background:var(--secondary)}
+nav .links a.btn{border-color:var(--border)}
+@media (max-width:640px){nav{padding:0 1rem}nav .links a.hidesm{display:none}}
+
+main{max-width:74rem;margin:0 auto;padding:1.5rem 1rem 4rem}
+@media (min-width:768px){main{padding:2rem 1.5rem 5rem}}
+
+/* hero */
+.hero{padding:2.5rem 0 1.5rem}
+.hero h1{font-family:var(--sans);font-weight:300;font-size:clamp(2rem,5vw,3rem);line-height:1.1;max-width:48rem;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--primary)}
+.hero .sub{margin-top:1.25rem;font-size:1.125rem;font-weight:300;color:var(--muted-fg);max-width:44rem}
+.upd{margin-top:.75rem;font-family:var(--mono);font-size:.688rem;color:var(--muted-fg)}
+.upd .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--success-fg);margin-right:.4rem;vertical-align:1px}
+
+/* stat cards: Morpho card chassis */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1.25rem;margin:2rem 0}
+.card{border:1px solid var(--border);border-radius:12px;background:var(--card);box-shadow:var(--shadow-sm);padding:1.5rem}
+.card .chip{width:2.75rem;height:2.75rem;border-radius:12px;background:var(--info);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;color:var(--primary);box-shadow:var(--shadow-sm);margin-bottom:1.25rem}
+.card .chip svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.25}
+.card h3{font-family:var(--sans);font-size:1.25rem;line-height:1.2;font-weight:300;margin-bottom:.5rem;color:var(--muted-fg);font-size:.938rem}
+.card .val{font-family:var(--sans);font-weight:400;font-size:1.9rem;line-height:1.15;letter-spacing:-.01em}
+.card .val small{font-size:1rem;color:var(--muted-fg);font-weight:300}
+.card .foot{margin-top:.5rem;font-size:.813rem;color:var(--muted-fg);font-weight:300}
+
+/* tape */
+.tape{border:1px solid var(--border);border-radius:12px;background:var(--card);overflow:hidden;margin-bottom:2rem}
+.tape .thead{display:flex;align-items:center;gap:.6rem;padding:.55rem .9rem;border-bottom:1px solid var(--border);background:var(--muted)}
+.tape .thead .label{font-family:var(--mono);font-size:.688rem;letter-spacing:.08em;color:var(--muted-fg)}
+.tapescroll{display:flex;gap:.5rem;overflow-x:auto;padding:.6rem .9rem;scrollbar-width:none}
+.tapescroll::-webkit-scrollbar{display:none}
+.tev{flex:0 0 auto;display:inline-flex;align-items:center;gap:.45rem;font-family:var(--mono);font-size:.72rem;
+  padding:.3rem .6rem;border:1px solid var(--border);border-radius:8px;color:var(--secondary-fg);white-space:nowrap}
+.tev b{font-weight:600;color:var(--fg)}
+.tev .k-c{color:var(--info-fg)} .tev .k-r{color:var(--warning-fg)} .tev .k-b{color:var(--destructive-fg)} .tev .k-o{color:var(--muted-fg)}
+.tev .ago{color:var(--muted-fg)}
+
+/* controls */
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;margin-bottom:1rem}
+.controls h2{font-family:var(--sans);font-weight:300;font-size:1.5rem;margin-right:auto}
+.search{height:2rem;padding:0 .75rem;border-radius:8px;border:1px solid var(--border);background:var(--muted);
+  color:var(--fg);font-family:var(--mono);font-size:.75rem;outline:none;width:13rem}
+.search:focus{border-color:var(--ring)}
+.search::placeholder{color:var(--muted-fg)}
+
+/* table: Morpho prose-table spec */
+.tblwrap{border:1px solid var(--border);border-radius:8px;background:var(--card);overflow:hidden}
+.tblscroll{overflow-x:auto}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:.875rem;line-height:1.5}
+th{position:sticky;top:0;text-align:left;padding:.625rem;background:#151516;color:var(--fg);font-weight:600;font-size:.75rem;
+  border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
+th .arr{color:var(--info-fg);font-size:.65rem}
+th:hover{color:var(--info-fg)}
+td{padding:.625rem;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr{cursor:pointer;transition:background-color .15s var(--ease)}
+tbody tr:hover{background:var(--secondary)}
+tbody tr.open{background:var(--muted)}
+td.num,th.num{text-align:right;font-family:var(--mono);font-size:.78rem}
+.rk{font-family:var(--mono);color:var(--muted-fg);font-size:.75rem;width:2rem}
+.tok{display:flex;align-items:center;gap:.6rem;min-width:11rem}
+.tok img,.tok .ph{width:26px;height:26px;border-radius:50%;object-fit:cover;flex:0 0 auto;background:var(--muted);
+  display:flex;align-items:center;justify-content:center;font-size:.8rem}
+.tok .sym{font-family:var(--sans);font-weight:500;font-size:.875rem}
+.tok .nm{color:var(--muted-fg);font-size:.72rem;font-weight:300;max-width:9rem;overflow:hidden;text-overflow:ellipsis}
+.xv{color:var(--info-fg);font-size:.7rem}
+.pos{color:var(--success-fg)} .neg{color:var(--destructive-fg)} .dim{color:var(--muted-fg)}
+.badge{display:inline-flex;align-items:center;height:1.125rem;padding:0 .35rem;border-radius:.25rem;
+  font-family:var(--mono);font-size:.625rem;font-weight:600;letter-spacing:.03em;white-space:nowrap}
+.b-unit{background:var(--info);color:var(--info-fg)}
+.b-thicc{background:var(--success);color:var(--success-fg)}
+.b-thick{background:var(--warning);color:var(--warning-fg)}
+.b-slim{background:var(--muted);color:var(--muted-fg)}
+.spark{display:block}
+.spark polyline{fill:none;stroke:var(--primary);stroke-width:1.5}
+
+/* detail row */
+tr.detail td{background:#0d0d0e;cursor:default;padding:1.25rem;white-space:normal}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:1.25rem}
+.dcard{border:1px solid var(--border);border-radius:12px;background:var(--card);padding:1rem}
+.dcard .lbl{font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;color:var(--muted-fg);margin-bottom:.4rem;text-transform:uppercase}
+.dcard .big{font-family:var(--sans);font-size:1.3rem;font-weight:400}
+.dcard .sub2{font-size:.78rem;color:var(--muted-fg);margin-top:.2rem;font-weight:300}
+.dlinks{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.25rem}
+.dlinks a{display:inline-flex;align-items:center;height:1.75rem;padding:0 .75rem;border-radius:8px;border:1px solid var(--border);
+  font-size:.75rem;color:var(--fg);transition:background-color .15s var(--ease)}
+.dlinks a:hover{background:var(--secondary)}
+.evlist{margin-top:1.25rem;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.evlist .evrow{display:flex;gap:.75rem;align-items:center;padding:.45rem .8rem;border-bottom:1px solid var(--border);
+  font-family:var(--mono);font-size:.72rem;color:var(--secondary-fg)}
+.evlist .evrow:last-child{border-bottom:none}
+.evlist .evrow .when{color:var(--muted-fg);width:9.5rem;flex:0 0 auto}
+
+/* methodology */
+.method{margin-top:4rem}
+.method h2{font-family:var(--sans);font-weight:300;font-size:2rem;margin-bottom:.75rem}
+.method .lead{color:var(--muted-fg);font-weight:300;max-width:46rem;margin-bottom:1.5rem}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:1.25rem}
+.method .card p{font-size:.875rem;color:var(--secondary-fg);font-weight:300}
+.method .card h3{color:var(--fg);font-size:1.05rem;margin-bottom:.4rem}
+.method code{border:1px solid var(--border);background:var(--muted);border-radius:5px;padding:1px 4px;
+  font-family:var(--mono);font-size:.72rem;color:var(--fg);word-break:break-all}
+.method .card ul{list-style:none;margin-top:.6rem}
+.method .card li{font-size:.813rem;color:var(--muted-fg);padding:.3rem 0;border-bottom:1px solid var(--border);font-weight:300}
+.method .card li:last-child{border-bottom:none}
+
+footer{border-top:1px solid var(--border);margin-top:4rem;padding:2rem 1.5rem;display:flex;flex-wrap:wrap;gap:1rem;
+  align-items:center;justify-content:space-between;font-size:.813rem;color:var(--muted-fg)}
+footer .fl{display:flex;gap:1rem}
+footer a:hover{color:var(--fg)}
+.loading{padding:4rem 0;text-align:center;color:var(--muted-fg);font-family:var(--mono);font-size:.8rem}
+</style>
+</head>
+<body>
+<nav>
+  <a class="brand" href="https://wingmanrh.com">
+    <svg width="22" height="22" viewBox="0 0 48 48"><path d="M20.6 41.9 C12 36 8 24.5 8.8 10.5 C15.5 18.5 20.5 29 23.3 33 C25.5 22.5 30.5 13 39.5 5.5 C40.2 21 34.8 35 25.8 41.9 C24.6 42.7 21.7 42.7 20.6 41.9 Z" fill="#2470ff"/><path d="M21 42 C22 38 22.6 36 23.3 33 C25.5 22.5 30.5 13 39.5 5.5 C40.2 21 34.8 35 25.8 41.9 C24.4 42.7 22.2 42.6 21 42 Z" fill="#5792ff"/></svg>
+    wingman</a>
+  <span class="sep">/</span><span class="prod">THICC</span>
+  <div class="links">
+    <a href="#method" class="hidesm">How it works</a>
+    <a href="https://x.com/wingmanrh" target="_blank" rel="noopener" class="hidesm">@wingmanrh</a>
+    <a href="https://wingmanrh.com" class="btn">wingman</a>
+  </div>
+</nav>
+
+<main>
+<section class="hero">
+  <h1>Every pool here is locked forever.<br>THICC ranks them by <em>what's really inside.</em></h1>
+  <p class="sub">Tokens launched on pools.trade can never pull their liquidity. THICC reads the chain and ranks every token by the real ETH sitting in its pool right now. FDV can be faked with pocket change. This number can't.</p>
+  <p class="upd" id="upd"><span class="dot"></span>loading data…</p>
+</section>
+
+<section class="stats" id="stats"></section>
+
+<section class="tape" id="tape" hidden>
+  <div class="thead"><span class="label">LIVE FLYWHEEL TAPE · fees getting locked back into pools, straight from the chain</span></div>
+  <div class="tapescroll" id="tapescroll"></div>
+</section>
+
+<div class="controls">
+  <h2>The leaderboard</h2>
+  <input class="search" id="q" placeholder="search token…" autocomplete="off">
+</div>
+<div class="tblwrap">
+  <div class="tblscroll">
+    <table id="tbl">
+      <thead><tr>
+        <th class="rk">#</th>
+        <th>Token</th>
+        <th>Tier</th>
+        <th class="num" data-k="depth_eth">ETH in pool <span class="arr" id="arr-depth_eth">▼</span></th>
+        <th class="num" data-k="dd1">24h Δ <span class="arr" id="arr-dd1"></span></th>
+        <th class="num" data-k="fly_eth">Flywheel locked <span class="arr" id="arr-fly_eth"></span></th>
+        <th class="num" data-k="fly_d1">Fly 24h <span class="arr" id="arr-fly_d1"></span></th>
+        <th class="num" data-k="backing">Backing <span class="arr" id="arr-backing"></span></th>
+        <th class="num" data-k="fdv">FDV <span class="arr" id="arr-fdv"></span></th>
+        <th class="num" data-k="vol24">Vol 24h <span class="arr" id="arr-vol24"></span></th>
+        <th>7d depth</th>
+      </tr></thead>
+      <tbody id="tbody"><tr><td colspan="11"><div class="loading">reading the chain…</div></td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<section class="method" id="method">
+  <h2>How THICC works</h2>
+  <p class="lead">Everything on this page comes from public data anyone can check. No accounts, no backend, no trust needed. Here is exactly what each number means.</p>
+  <div class="mgrid">
+    <div class="card">
+      <div class="chip"><svg viewBox="0 0 20 20"><path d="M10 2v16M4 6c0 6 2.5 10 6 12 3.5-2 6-6 6-12l-6-4z" stroke-linejoin="round"/></svg></div>
+      <h3>ETH in pool</h3>
+      <p>The main number. We read each pool's exact state from the chain (its price and its liquidity) and compute how much ETH the locked position holds right now. Buys push ETH in. Nobody can ever pull it out.</p>
+      <ul>
+        <li>Read via StateView <code>0xF3334192D15450CdD385c8B70e03f9A6bD9E673b</code></li>
+        <li>Formula: amount0 over the curve range, ticks <code>-160100…198050</code></li>
+        <li>Exact for standard launches. Legacy pools (pre Aug 5) are slightly undercounted.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="chip"><svg viewBox="0 0 20 20"><path d="M10 3a7 7 0 1 1-6.3 4M3 3v4h4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h3>Flywheel locked</h3>
+      <p>Every trade pays a 0.25% fee. Most of it gets bought back into the locked pool, forever. This column counts every one of those events since the platform launched. It only ever goes up.</p>
+      <ul>
+        <li>Event <code>Claimed</code> on the compounder <code>0xf9526Dd3…E99a</code></li>
+        <li>Full history scanned from block 22,754,669 (Jul 29)</li>
+        <li>A tiny share (~3% measured) pays the bots that trigger it</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="chip"><svg viewBox="0 0 20 20"><path d="M3 17V8m7 9V3m7 14v-6" stroke-linecap="round"/></svg></div>
+      <h3>Backing</h3>
+      <p>ETH in pool divided by FDV. It answers one question: how much of this token's market cap is real money locked under it? High backing means the price stands on something. Low backing means it stands on air.</p>
+      <ul>
+        <li>Pure division, both inputs shown on this page</li>
+        <li>Compare tokens at similar FDV for the fairest read</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="chip"><svg viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" rx="3"/><path d="M7 10l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <h3>Why you can't fake it</h3>
+      <p>Climbing this leaderboard has exactly one path: real ETH volume on your token. Wash trading "works", but every fake trade donates 0.15% of it into the locked pool. You can buy your rank, but the money stays locked in your pool for your holders. We are fine with that.</p>
+      <ul>
+        <li>Token ranks update about every 30 minutes</li>
+        <li>Built by <a href="https://wingmanrh.com" style="color:var(--info-fg)">wingman</a>, the collab launch marketplace</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <span>THICC by <a href="https://wingmanrh.com"><b>wingman</b></a> · data straight from Robinhood Chain · refreshes ~30 min</span>
+  <div class="fl">
+    <a href="https://x.com/wingmanrh" target="_blank" rel="noopener">@wingmanrh</a>
+    <a href="https://wingmanrh.com">wingmanrh.com</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var DATA="data/leaderboard.json", FLY="data/flywheel.json";
+var $=function(s){return document.querySelector(s)};
+var state={rows:[],sortK:"depth_eth",sortDir:-1,flyTokens:null,openAddr:null};
+
+function fmt(n,d){if(n==null||isNaN(n))return "—";d=d==null?2:d;
+  var a=Math.abs(n);
+  if(a>=1e9)return (n/1e9).toFixed(2)+"B";
+  if(a>=1e6)return (n/1e6).toFixed(2)+"M";
+  if(a>=1e3)return (n/1e3).toFixed(1)+"k";
+  return n.toFixed(d)}
+function usd(n){return n==null?"—":"$"+fmt(n)}
+function eth(n,d){return n==null?"—":fmt(n,d==null?2:d)+" Ξ"}
+function ago(ts){var s=Math.floor(Date.now()/1000-ts);
+  if(s<60)return s+"s ago";if(s<3600)return Math.floor(s/60)+"m ago";
+  if(s<86400)return Math.floor(s/3600)+"h ago";return Math.floor(s/86400)+"d ago"}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function badge(t){var c={"ABSOLUTE UNIT":"b-unit","THICC":"b-thicc","THICK":"b-thick","SLIM":"b-slim"}[t]||"b-slim";
+  return '<span class="badge '+c+'">'+esc(t)+'</span>'}
+function delta(n,d){if(n==null)return '<span class="dim">—</span>';
+  var cls=n>0?"pos":(n<0?"neg":"dim"),sign=n>0?"+":"";
+  return '<span class="'+cls+'">'+sign+fmt(n,d==null?3:d)+'</span>'}
+function spark(pts){if(!pts||pts.length<2)return '<span class="dim">—</span>';
+  var vs=pts.map(function(p){return p[1]}),mn=Math.min.apply(0,vs),mx=Math.max.apply(0,vs);
+  var W=90,H=24,pad=2,rng=(mx-mn)||1;
+  var pl=pts.map(function(p,i){
+    return (pad+i*(W-2*pad)/(pts.length-1)).toFixed(1)+","+(H-pad-(p[1]-mn)/rng*(H-2*pad)).toFixed(1)
+  }).join(" ");
+  return '<svg class="spark" width="'+W+'" height="'+H+'"><polyline points="'+pl+'"/></svg>'}
+function tokCell(r){
+  var img=r.img?'<img src="'+esc(r.img)+'" loading="lazy" onerror="this.outerHTML=\'<span class=ph>'+esc(r.emoji||"·")+'</span>\'">'
+              :'<span class="ph" style="background:hsl('+(r.hue||220)+' 40% 25%)">'+esc(r.emoji||"·")+'</span>';
+  return '<div class="tok">'+img+'<div><div class="sym">'+esc(r.sym||"?")+(r.xv?' <span class="xv" title="X verified">✓</span>':"")+
+    '</div><div class="nm">'+esc(r.name||"")+'</div></div></div>'}
+
+function countUp(el,target,fmtFn,ms){var t0=null;
+  function step(t){if(!t0)t0=t;var p=Math.min(1,(t-t0)/(ms||1400));p=1-Math.pow(1-p,3);
+    el.textContent=fmtFn(target*p);if(p<1)requestAnimationFrame(step)}
+  requestAnimationFrame(step)}
+
+function renderStats(eco){
+  var cards=[
+    {icon:'<path d="M10 2v16M4 6c0 6 2.5 10 6 12 3.5-2 6-6 6-12l-6-4z" stroke-linejoin="round"/>',
+     t:"ETH locked in pools right now",v:eco.total_depth_eth,f:function(n){return fmt(n,0)+" Ξ"},
+     foot:usd(eco.total_depth_usd)+" across "+eco.n_tokens_api+" tracked tokens"},
+    {icon:'<path d="M10 3a7 7 0 1 1-6.3 4M3 3v4h4" stroke-linecap="round" stroke-linejoin="round"/>',
+     t:"Recycled by the flywheel, all time",v:eco.total_fly_eth,f:function(n){return fmt(n,1)+" Ξ"},
+     foot:eco.n_compounds+" compound events since Jul 29"},
+    {icon:'<path d="M3 10h4l2-5 3 10 2-5h3" stroke-linecap="round" stroke-linejoin="round"/>',
+     t:"Locked in the last 24h",v:eco.fly_24h_eth,f:function(n){return fmt(n,2)+" Ξ"},
+     foot:"fees turned into permanent liquidity"},
+    {icon:'<path d="M6 14l4-8 4 8M5 17h10" stroke-linecap="round" stroke-linejoin="round"/>',
+     t:"Claimed by creators, all time",v:eco.total_creator_eth,f:function(n){return fmt(n,1)+" Ξ"},
+     foot:"ETH price used: $"+fmt(eco.eth_usd,0)}
+  ];
+  $("#stats").innerHTML=cards.map(function(c,i){
+    return '<div class="card"><div class="chip"><svg viewBox="0 0 20 20">'+c.icon+'</svg></div>'+
+      '<h3>'+c.t+'</h3><div class="val" id="cv'+i+'"></div><div class="foot">'+c.foot+'</div></div>'}).join("");
+  cards.forEach(function(c,i){countUp($("#cv"+i),c.v||0,c.f)});
+}
+
+var KINDS={c:["compound","locked into the pool","k-c"],r:["creator claim","claimed by the creator","k-r"],
+           b:["burn","burn machine claim","k-b"],o:["claim","claim","k-o"]};
+function renderTape(tape){
+  if(!tape||!tape.length)return;
+  $("#tape").hidden=false;
+  $("#tapescroll").innerHTML=tape.slice(0,40).map(function(e){
+    var k=KINDS[e[1]]||KINDS.o;
+    return '<span class="tev"><span class="'+k[2]+'">'+k[0]+'</span><b>'+esc(e[3]||e[2].slice(0,8))+'</b>'+
+      (e[4]?'<span>'+fmt(e[4],4)+' Ξ</span>':'')+'<span class="ago">'+ago(e[0])+'</span></span>'}).join("");
+}
+
+function sortRows(){
+  var k=state.sortK,d=state.sortDir;
+  state.rows.sort(function(a,b){
+    var x=a[k],y=b[k];
+    if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;
+    return x>y?d:(x<y?-d:0)});
+  document.querySelectorAll("th .arr").forEach(function(el){el.textContent=""});
+  var arr=$("#arr-"+k);if(arr)arr.textContent=d<0?"▼":"▲";
+}
+
+function renderTable(){
+  var q=($("#q").value||"").toLowerCase().trim();
+  var rows=state.rows.filter(function(r){
+    return !q||(r.sym||"").toLowerCase().indexOf(q)>=0||(r.name||"").toLowerCase().indexOf(q)>=0||r.a.indexOf(q)>=0});
+  var h=rows.map(function(r){
+    var open=state.openAddr===r.a;
+    var tr='<tr data-a="'+r.a+'" class="'+(open?"open":"")+'">'+
+      '<td class="rk">'+r.rank+'</td>'+
+      '<td>'+tokCell(r)+'</td>'+
+      '<td>'+badge(r.tier)+'</td>'+
+      '<td class="num"><b>'+eth(r.depth_eth)+'</b><br><span class="dim" style="font-size:.68rem">'+usd(r.depth_usd)+'</span></td>'+
+      '<td class="num">'+delta(r.dd1)+'</td>'+
+      '<td class="num">'+eth(r.fly_eth)+(r.n_comp?'<br><span class="dim" style="font-size:.68rem">'+r.n_comp+' compounds</span>':'')+'</td>'+
+      '<td class="num">'+delta(r.fly_d1,4)+'</td>'+
+      '<td class="num">'+(r.backing==null?'<span class="dim">—</span>':(r.backing*100).toFixed(1)+"%")+'</td>'+
+      '<td class="num">'+usd(r.fdv)+'</td>'+
+      '<td class="num">'+usd(r.vol24)+'</td>'+
+      '<td>'+spark(r.spark)+'</td></tr>';
+    if(open)tr+=detailRow(r);
+    return tr}).join("");
+  $("#tbody").innerHTML=h||'<tr><td colspan="11"><div class="loading">nothing matches</div></td></tr>';
+}
+
+function detailRow(r){
+  var bs="https://robinhoodchain.blockscout.com/token/"+r.a;
+  var pt="https://pools.trade/t/"+r.a;
+  var dx="https://dexscreener.com/robinhood/"+r.a;
+  var evs=eventsFor(r.a);
+  return '<tr class="detail"><td colspan="11">'+
+    '<div class="dgrid">'+
+      dc("ETH in pool",eth(r.depth_eth),usd(r.depth_usd)+" · tier "+r.tier)+
+      dc("Flywheel locked all time",eth(r.fly_eth),fmt(r.fly_tok,0)+" tokens relocked · "+r.n_comp+" events")+
+      dc("Creator has claimed",eth(r.creator_eth),r.burn_eth>0?("burn machine: "+eth(r.burn_eth)):"40% of ETH side fees is theirs")+
+      dc("Backing",(r.backing==null?"—":(r.backing*100).toFixed(1)+"%"),"of "+usd(r.fdv)+" FDV is locked ETH")+
+    '</div>'+
+    (evs?('<div class="evlist">'+evs+'</div>'):'')+
+    '<div class="dlinks">'+
+      '<a href="'+pt+'" target="_blank" rel="noopener">pools.trade ↗</a>'+
+      '<a href="'+bs+'" target="_blank" rel="noopener">Blockscout ↗</a>'+
+      '<a href="'+dx+'" target="_blank" rel="noopener">DexScreener ↗</a>'+
+      (r.x?'<a href="'+esc(r.x)+'" target="_blank" rel="noopener">creator on X ↗</a>':'')+
+    '</div></td></tr>';
+  function dc(l,b,s){return '<div class="dcard"><div class="lbl">'+l+'</div><div class="big">'+b+'</div><div class="sub2">'+s+'</div></div>'}
+}
+
+function eventsFor(a){
+  if(!state.flyTokens)return "";
+  var t=state.flyTokens[a];if(!t||!t.ev||!t.ev.length)return "";
+  var rows=t.ev.slice(-12).reverse().map(function(e){
+    var k=KINDS[e[1]]||(e[1]===e[1].toUpperCase()?KINDS[e[1].toLowerCase()]:KINDS.o);
+    var n=e[4]>1?(" ×"+e[4]):"";
+    var when=e[4]>1?new Date(e[0]*1000).toISOString().slice(0,10)+" (day)":ago(e[0]);
+    return '<div class="evrow"><span class="when">'+when+'</span><span class="'+k[2]+'">'+k[0]+n+'</span>'+
+      '<span>'+fmt(parseInt(e[2])/1e18,5)+' Ξ</span></div>'}).join("");
+  return rows;
+}
+
+document.addEventListener("click",function(ev){
+  var th=ev.target.closest("th[data-k]");
+  if(th){var k=th.getAttribute("data-k");
+    if(state.sortK===k)state.sortDir*=-1;else{state.sortK=k;state.sortDir=-1}
+    sortRows();renderTable();return}
+  var tr=ev.target.closest("tbody tr[data-a]");
+  if(tr){var a=tr.getAttribute("data-a");
+    state.openAddr=state.openAddr===a?null:a;
+    if(state.openAddr&&!state.flyTokens)loadFly();
+    renderTable()}
+});
+$("#q").addEventListener("input",renderTable);
+
+function loadFly(){
+  fetch(FLY+"?t="+Math.floor(Date.now()/3e5)).then(function(r){return r.json()}).then(function(d){
+    state.flyTokens=d.tokens||{};renderTable()}).catch(function(){})
+}
+
+fetch(DATA+"?t="+Math.floor(Date.now()/3e5)).then(function(r){
+  if(!r.ok)throw new Error(r.status);return r.json()
+}).then(function(d){
+  state.rows=d.rows||[];
+  renderStats(d.eco||{});
+  renderTape(d.tape||[]);
+  sortRows();renderTable();
+  $("#upd").innerHTML='<span class="dot"></span>chain data as of '+ago(d.updated)+
+    ' · scanned to block '+(d.eco&&d.eco.scan_to?d.eco.scan_to.toLocaleString("en-US"):"?");
+}).catch(function(e){
+  $("#tbody").innerHTML='<tr><td colspan="11"><div class="loading">data unavailable right now. try a refresh.</div></td></tr>';
+});
+})();
+</script>
+</body>
+</html>

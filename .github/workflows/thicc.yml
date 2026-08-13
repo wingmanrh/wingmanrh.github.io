@@ -1,0 +1,30 @@
+name: thicc
+on:
+  schedule:
+    - cron: "9,39 * * * *"
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: thicc
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: refresh data
+        run: python3 thicc/pipeline/refresh.py
+      - name: commit data
+        run: |
+          git config user.name "wingmanrh"
+          git config user.email "315023814+wingmanrh@users.noreply.github.com"
+          git add thicc/data
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git commit -m "thicc data"
+          n=0
+          until git push; do
+            n=$((n+1)); [ $n -ge 3 ] && exit 1
+            git pull --rebase origin main
+          done
