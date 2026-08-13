@@ -56,23 +56,28 @@ nav .links{margin-left:auto;display:flex;gap:.375rem;align-items:center}
 .shell{max-width:1500px;margin:0 auto;padding:calc(var(--nav) + 1rem) var(--frame) var(--frame)}
 @media (min-width:1024px){.shell{padding-left:calc(var(--frame) + 1rem);padding-right:calc(var(--frame) + 1rem)}}
 
-/* page header: h1 38/400 + sub 15 + KPI pills */
-.phead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1.25rem;padding:1rem .25rem 2rem}
-.phead h1{font-size:2.375rem;line-height:1.2;font-weight:400}
-.phead .sub{margin-top:.25rem;color:var(--fg2);font-size:.938rem;font-weight:300;max-width:40rem}
-.headline{display:flex;align-items:center;gap:.5rem;margin-top:.75rem}
+/* page header: centered hero, Morpho giant-wordmark gradient clip on the title
+   (their Footer giantMorpho recipe: linear-gradient(180deg,#ffffff26 5%,#fff0 70%)
+   clipped into FK Grotesk 110% line-height, uppercase, centered — brightened at
+   the top here so the title stays readable as a heading) */
+.phead{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.25rem;padding:2.5rem .25rem 1.5rem}
+.phead h1{font-family:var(--sans);font-weight:300;line-height:1.1;letter-spacing:.01em;
+  font-size:clamp(4.5rem,13vw,9rem);
+  background:linear-gradient(180deg,#ffffff 8%,#ffffff30 92%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.phead .sub{margin-top:.5rem;color:var(--fg2);font-size:.938rem;font-weight:300;max-width:40rem}
+.headline{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:1rem}
 .headline .amt{font-size:1.25rem;line-height:1.2;color:var(--fg)}
 .headline .unit{font-size:1.25rem;line-height:1.2;color:var(--fg3)}
 .tagpill{display:inline-flex;align-items:center;gap:2px;min-height:26px;padding:0 .5rem;border-radius:120px;
   background:var(--secondary);color:var(--fg2);font-size:.688rem;line-height:1}
-.kpis{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:flex-end}
+.kpis{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-top:1rem}
 .kpi{display:flex;align-items:center;gap:.5rem;white-space:nowrap;padding:5px 1.25rem;border-radius:1rem;
   background:var(--muted);border:var(--bw) solid var(--border)}
 .kpi .l{color:var(--fg2);font-size:.813rem;line-height:1}
 .kpi .v{color:var(--fg);font-size:.813rem;line-height:1}
-.upd{padding:0 .25rem 1rem;font-size:.688rem;color:var(--fg3)}
+.upd{padding:0 .25rem 1.25rem;font-size:.688rem;color:var(--fg3);text-align:center}
 @media (max-width:640px){
-  .kpis{justify-content:flex-start}
   th:nth-child(3),td:nth-child(3){display:none}
 }
 .upd .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--success-fg);margin-right:.4rem;vertical-align:1px}
@@ -202,13 +207,11 @@ footer a:hover{color:var(--fg)}
 <div class="shell">
 
 <div class="phead">
-  <div>
-    <h1>THICC</h1>
-    <p class="sub">Every pool on Robinhood Chain is locked forever. THICC ranks tokens by the real ETH inside. A price can be pumped with pocket change. This number can't.</p>
-    <div class="headline" id="headline" hidden>
-      <span class="amt" id="hl-amt"></span><span class="unit">Ξ locked forever</span>
-      <span class="tagpill" id="hl-usd"></span>
-    </div>
+  <h1>THICC</h1>
+  <p class="sub">Every pool on Robinhood Chain is locked forever. THICC ranks tokens by the real ETH inside. A price can be pumped with pocket change. This number can't.</p>
+  <div class="headline" id="headline" hidden>
+    <span class="amt" id="hl-amt"></span><span class="unit">Ξ locked forever</span>
+    <span class="tagpill" id="hl-usd"></span>
   </div>
   <div class="kpis" id="kpis"></div>
 </div>
