@@ -201,8 +201,8 @@ footer a:hover{color:var(--fg)}
         <th>Tier</th>
         <th class="num" data-k="depth_eth">ETH in pool <span class="arr" id="arr-depth_eth">▼</span></th>
         <th class="num" data-k="pool_usd" title="Both sides of the pool in USD. Includes the pool's own unsold tokens at spot, so we show it but never rank by it.">Pool value <span class="arr" id="arr-pool_usd"></span></th>
-        <th class="num" data-k="fly_eth" title="Trading fees that were bought back into the locked pool, forever. All time.">Fees relocked <span class="arr" id="arr-fly_eth"></span></th>
-        <th class="num" data-k="fly_d1" title="Fees locked back into this pool in the last 24 hours.">Relocked 24h <span class="arr" id="arr-fly_d1"></span></th>
+        <th class="num" data-k="fly_eth" title="Trading fees that were bought back into the locked pool, forever. All time.">Fees locked <span class="arr" id="arr-fly_eth"></span></th>
+        <th class="num" data-k="fly_d1" title="Fees locked back into this pool in the last 24 hours.">Locked 24h <span class="arr" id="arr-fly_d1"></span></th>
         <th class="num" data-k="fdv">FDV <span class="arr" id="arr-fdv"></span></th>
         <th class="num" data-k="vol24">Vol 24h <span class="arr" id="arr-vol24"></span></th>
         <th>7d depth</th>
@@ -229,7 +229,7 @@ footer a:hover{color:var(--fg)}
     </div>
     <div class="card">
       <div class="chip"><svg viewBox="0 0 20 20"><path d="M10 3a7 7 0 1 1-6.3 4M3 3v4h4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <h3>Fees relocked</h3>
+      <h3>Fees locked</h3>
       <p>Every trade pays a 0.25% fee. Most of it gets bought back into the locked pool, forever. This column counts every one of those events since the platform launched. It only ever goes up.</p>
       <ul>
         <li>Event <code>Claimed</code> on the compounder <code>0xf9526Dd3…E99a</code></li>
@@ -315,8 +315,8 @@ function renderStats(eco){
      t:"ETH locked in pools right now",v:eco.total_depth_eth,f:function(n){return fmt(n,0)+" Ξ"},
      foot:usd(eco.total_depth_usd)+" across "+eco.n_tokens_api+" tracked tokens"},
     {icon:'<path d="M10 3a7 7 0 1 1-6.3 4M3 3v4h4" stroke-linecap="round" stroke-linejoin="round"/>',
-     t:"Fees locked back into pools, all time",v:eco.total_fly_eth,f:function(n){return fmt(n,1)+" Ξ"},
-     foot:eco.n_compounds+" relock events since Jul 29"},
+     t:"Fees locked into pools, all time",v:eco.total_fly_eth,f:function(n){return fmt(n,1)+" Ξ"},
+     foot:eco.n_compounds+" lock events since Jul 29"},
     {icon:'<path d="M3 10h4l2-5 3 10 2-5h3" stroke-linecap="round" stroke-linejoin="round"/>',
      t:"Locked in the last 24h",v:eco.fly_24h_eth,f:function(n){return fmt(n,2)+" Ξ"},
      foot:"fees turned into permanent liquidity"},
@@ -330,7 +330,7 @@ function renderStats(eco){
   cards.forEach(function(c,i){countUp($("#cv"+i),c.v||0,c.f)});
 }
 
-var KINDS={c:["fees relocked","locked into the pool","k-c"],r:["creator claim","claimed by the creator","k-r"],
+var KINDS={c:["fees locked","locked into the pool","k-c"],r:["creator claim","claimed by the creator","k-r"],
            b:["burn","burn machine claim","k-b"],o:["claim","claim","k-o"]};
 function renderTape(tape){
   if(!tape||!tape.length)return;
@@ -381,7 +381,7 @@ function detailRow(r){
   return '<tr class="detail"><td colspan="10">'+
     '<div class="dgrid">'+
       dc("ETH in pool",eth(r.depth_eth),usd(r.depth_usd)+" · tier "+r.tier)+
-      dc("Fees relocked, all time",eth(r.fly_eth),fmt(r.fly_tok,0)+" tokens relocked · "+r.n_comp+" events")+
+      dc("Fees locked, all time",eth(r.fly_eth),fmt(r.fly_tok,0)+" tokens locked in · "+r.n_comp+" events")+
       dc("Creator has claimed",eth(r.creator_eth),r.burn_eth>0?("burn machine: "+eth(r.burn_eth)):"40% of ETH side fees is theirs")+
       dc("Backing",(r.backing==null?"—":(r.backing*100).toFixed(1)+"%"),"of "+usd(r.fdv)+" FDV is locked ETH")+
       dc("Pool value, both sides",usd(r.pool_usd),usd(r.tok_side_usd)+" of it is the token's own unsold supply")+
