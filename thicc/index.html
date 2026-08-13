@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>THICC</title>
-<meta name="description" content="The locked liquidity leaderboard for Robinhood Chain. Every pools.trade token locks its pool forever. THICC ranks them by the real ETH inside.">
+<meta name="description" content="Every token on Robinhood Chain locks its pool forever. THICC ranks them by the real ETH inside.">
 <meta property="og:title" content="THICC">
 <meta property="og:description" content="The locked liquidity leaderboard for Robinhood Chain.">
 <meta property="og:url" content="https://wingmanrh.com/thicc/">
@@ -177,7 +177,7 @@ footer a:hover{color:var(--fg)}
 <main>
 <section class="hero">
   <h1>Every pool here is locked forever.<br>THICC ranks them by <em>what's really inside.</em></h1>
-  <p class="sub">Tokens launched on pools.trade can never pull their liquidity. THICC reads the chain and ranks every token by the real ETH sitting in its pool right now. FDV can be faked with pocket change. This number can't.</p>
+  <p class="sub">Tokens launched on pools.trade can never take their pool away. Every buy pushes real ETH in, and nothing can ever pull it out. THICC reads the chain and shows exactly how much each pool holds. A price can be pumped with pocket change. This number can't.</p>
   <p class="upd" id="upd"><span class="dot"></span>loading data…</p>
 </section>
 
@@ -198,14 +198,14 @@ footer a:hover{color:var(--fg)}
       <thead><tr>
         <th class="rk">#</th>
         <th>Token</th>
-        <th>Tier</th>
-        <th class="num" data-k="depth_eth">ETH in pool <span class="arr" id="arr-depth_eth">▼</span></th>
+        <th title="Size class, based on the ETH locked in the pool.">Tier</th>
+        <th class="num" data-k="depth_eth" title="Real ETH locked in this token's pool. Nobody can take it out. This is the number we rank by.">ETH in pool <span class="arr" id="arr-depth_eth">▼</span></th>
         <th class="num" data-k="pool_usd" title="Both sides of the pool in USD. Includes the pool's own unsold tokens at spot, so we show it but never rank by it.">Pool value <span class="arr" id="arr-pool_usd"></span></th>
         <th class="num" data-k="fly_eth" title="Trading fees that were bought back into the locked pool, forever. All time.">Fees locked <span class="arr" id="arr-fly_eth"></span></th>
         <th class="num" data-k="fly_d1" title="Fees locked back into this pool in the last 24 hours.">Locked 24h <span class="arr" id="arr-fly_d1"></span></th>
-        <th class="num" data-k="fdv">FDV <span class="arr" id="arr-fdv"></span></th>
-        <th class="num" data-k="vol24">Vol 24h <span class="arr" id="arr-vol24"></span></th>
-        <th>7d depth</th>
+        <th class="num" data-k="fdv" title="Price times total supply. What the whole token is worth on paper.">Market cap <span class="arr" id="arr-fdv"></span></th>
+        <th class="num" data-k="vol24" title="How much of this token was bought and sold in the last 24 hours.">Traded 24h <span class="arr" id="arr-vol24"></span></th>
+        <th title="ETH in the pool over the last 7 days.">Last 7 days</th>
       </tr></thead>
       <tbody id="tbody"><tr><td colspan="10"><div class="loading">reading the chain…</div></td></tr></tbody>
     </table>
@@ -219,7 +219,7 @@ footer a:hover{color:var(--fg)}
     <div class="card">
       <div class="chip"><svg viewBox="0 0 20 20"><path d="M10 2v16M4 6c0 6 2.5 10 6 12 3.5-2 6-6 6-12l-6-4z" stroke-linejoin="round"/></svg></div>
       <h3>ETH in pool</h3>
-      <p>The main number. We read each pool's exact state from the chain (its price and its liquidity) and compute how much ETH the locked position holds right now. Buys push ETH in. Nobody can ever pull it out.</p>
+      <p>The main number. We read each pool straight from the chain and compute exactly how much ETH sits inside right now. Every buy pushes ETH in. Nobody can ever take it out.</p>
       <ul>
         <li>Read via StateView <code>0xF3334192D15450CdD385c8B70e03f9A6bD9E673b</code></li>
         <li>Formula: amount0 over the curve range, ticks <code>-160100…198050</code></li>
@@ -239,7 +239,7 @@ footer a:hover{color:var(--fg)}
     </div>
     <div class="card">
       <div class="chip"><svg viewBox="0 0 20 20"><path d="M3 17V8m7 9V3m7 14v-6" stroke-linecap="round"/></svg></div>
-      <h3>Backing (in the token view)</h3>
+      <h3>Backing</h3>
       <p>ETH in pool divided by FDV: how much of this token's market cap is real money locked under it. You'll find it when you open a token's row. We keep it out of the main table because small tokens naturally show higher percentages, so comparing it across tokens misleads.</p>
       <ul>
         <li>Pure division, both inputs shown on this page</li>
@@ -249,7 +249,7 @@ footer a:hover{color:var(--fg)}
     <div class="card">
       <div class="chip"><svg viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" rx="3"/><path d="M7 10l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <h3>Why you can't fake it</h3>
-      <p>Climbing this leaderboard has exactly one path: real ETH volume on your token. Wash trading "works", but every fake trade donates 0.15% of it into the locked pool. You can buy your rank, but the money stays locked in your pool for your holders. We are fine with that.</p>
+      <p>There is exactly one way up this board: real ETH trading on your token. Even trading with yourself to fake volume backfires, because every fake trade donates part of its fee into your locked pool. You can buy your rank, but the money stays locked under your holders. We are fine with that.</p>
       <ul>
         <li>Token ranks update about every 30 minutes</li>
         <li>Built by <a href="https://wingmanrh.com" style="color:var(--info-fg)">wingman</a>, the collab launch marketplace</li>
@@ -316,10 +316,10 @@ function renderStats(eco){
      foot:usd(eco.total_depth_usd)+" across "+eco.n_tokens_api+" tracked tokens"},
     {icon:'<path d="M10 3a7 7 0 1 1-6.3 4M3 3v4h4" stroke-linecap="round" stroke-linejoin="round"/>',
      t:"Fees locked into pools, all time",v:eco.total_fly_eth,f:function(n){return fmt(n,1)+" Ξ"},
-     foot:eco.n_compounds+" lock events since Jul 29"},
+     foot:eco.n_compounds+" times since Jul 29"},
     {icon:'<path d="M3 10h4l2-5 3 10 2-5h3" stroke-linecap="round" stroke-linejoin="round"/>',
      t:"Locked in the last 24h",v:eco.fly_24h_eth,f:function(n){return fmt(n,2)+" Ξ"},
-     foot:"fees turned into permanent liquidity"},
+     foot:"trading fees, locked in for good"},
     {icon:'<path d="M6 14l4-8 4 8M5 17h10" stroke-linecap="round" stroke-linejoin="round"/>',
      t:"Claimed by creators, all time",v:eco.total_creator_eth,f:function(n){return fmt(n,1)+" Ξ"},
      foot:"ETH price used: $"+fmt(eco.eth_usd,0)}
@@ -381,10 +381,10 @@ function detailRow(r){
   return '<tr class="detail"><td colspan="10">'+
     '<div class="dgrid">'+
       dc("ETH in pool",eth(r.depth_eth),usd(r.depth_usd)+" · tier "+r.tier)+
-      dc("Fees locked, all time",eth(r.fly_eth),fmt(r.fly_tok,0)+" tokens locked in · "+r.n_comp+" events")+
-      dc("Creator has claimed",eth(r.creator_eth),r.burn_eth>0?("burn machine: "+eth(r.burn_eth)):"40% of ETH side fees is theirs")+
-      dc("Backing",(r.backing==null?"—":(r.backing*100).toFixed(1)+"%"),"of "+usd(r.fdv)+" FDV is locked ETH")+
-      dc("Pool value, both sides",usd(r.pool_usd),usd(r.tok_side_usd)+" of it is the token's own unsold supply")+
+      dc("Fees locked, all time",eth(r.fly_eth),fmt(r.fly_tok,0)+" tokens locked in · "+r.n_comp+" times")+
+      dc("Creator has claimed",eth(r.creator_eth),r.burn_eth>0?("burn machine: "+eth(r.burn_eth)):"creators get 40% of trading fees, paid in ETH")+
+      dc("Backing",(r.backing==null?"—":(r.backing*100).toFixed(1)+"%"),"of its "+usd(r.fdv)+" market cap is real locked ETH")+
+      dc("Pool value, both sides",usd(r.pool_usd),usd(r.tok_side_usd)+" of it is just its own unsold tokens")+
     '</div>'+
     (evs?('<div class="evlist">'+evs+'</div>'):'')+
     '<div class="dlinks">'+
