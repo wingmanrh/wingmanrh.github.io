@@ -201,6 +201,7 @@ footer a:hover{color:var(--fg)}
         <th>Tier</th>
         <th class="num" data-k="depth_eth">ETH in pool <span class="arr" id="arr-depth_eth">▼</span></th>
         <th class="num" data-k="dd1">24h Δ <span class="arr" id="arr-dd1"></span></th>
+        <th class="num" data-k="pool_usd" title="Both sides of the pool in USD. Includes the pool's own unsold tokens at spot, so we show it but never rank by it.">Pool value <span class="arr" id="arr-pool_usd"></span></th>
         <th class="num" data-k="fly_eth">Flywheel locked <span class="arr" id="arr-fly_eth"></span></th>
         <th class="num" data-k="fly_d1">Fly 24h <span class="arr" id="arr-fly_d1"></span></th>
         <th class="num" data-k="backing">Backing <span class="arr" id="arr-backing"></span></th>
@@ -208,7 +209,7 @@ footer a:hover{color:var(--fg)}
         <th class="num" data-k="vol24">Vol 24h <span class="arr" id="arr-vol24"></span></th>
         <th>7d depth</th>
       </tr></thead>
-      <tbody id="tbody"><tr><td colspan="11"><div class="loading">reading the chain…</div></td></tr></tbody>
+      <tbody id="tbody"><tr><td colspan="12"><div class="loading">reading the chain…</div></td></tr></tbody>
     </table>
   </div>
 </div>
@@ -225,6 +226,7 @@ footer a:hover{color:var(--fg)}
         <li>Read via StateView <code>0xF3334192D15450CdD385c8B70e03f9A6bD9E673b</code></li>
         <li>Formula: amount0 over the curve range, ticks <code>-160100…198050</code></li>
         <li>Exact for standard launches. Legacy pools (pre Aug 5) are slightly undercounted.</li>
+        <li>Pool value shows both sides. The token half is the pool's own unsold supply at spot, so it moves with price, not with new money. We show it but never rank by it.</li>
       </ul>
     </div>
     <div class="card">
@@ -363,6 +365,7 @@ function renderTable(){
       '<td>'+badge(r.tier)+'</td>'+
       '<td class="num"><b>'+eth(r.depth_eth)+'</b><br><span class="dim" style="font-size:.68rem">'+usd(r.depth_usd)+'</span></td>'+
       '<td class="num">'+delta(r.dd1)+'</td>'+
+      '<td class="num">'+usd(r.pool_usd)+'</td>'+
       '<td class="num">'+eth(r.fly_eth)+(r.n_comp?'<br><span class="dim" style="font-size:.68rem">'+r.n_comp+' compounds</span>':'')+'</td>'+
       '<td class="num">'+delta(r.fly_d1,4)+'</td>'+
       '<td class="num">'+(r.backing==null?'<span class="dim">—</span>':(r.backing*100).toFixed(1)+"%")+'</td>'+
@@ -371,7 +374,7 @@ function renderTable(){
       '<td>'+spark(r.spark)+'</td></tr>';
     if(open)tr+=detailRow(r);
     return tr}).join("");
-  $("#tbody").innerHTML=h||'<tr><td colspan="11"><div class="loading">nothing matches</div></td></tr>';
+  $("#tbody").innerHTML=h||'<tr><td colspan="12"><div class="loading">nothing matches</div></td></tr>';
 }
 
 function detailRow(r){
@@ -379,12 +382,13 @@ function detailRow(r){
   var pt="https://pools.trade/t/"+r.a;
   var dx="https://dexscreener.com/robinhood/"+r.a;
   var evs=eventsFor(r.a);
-  return '<tr class="detail"><td colspan="11">'+
+  return '<tr class="detail"><td colspan="12">'+
     '<div class="dgrid">'+
       dc("ETH in pool",eth(r.depth_eth),usd(r.depth_usd)+" · tier "+r.tier)+
       dc("Flywheel locked all time",eth(r.fly_eth),fmt(r.fly_tok,0)+" tokens relocked · "+r.n_comp+" events")+
       dc("Creator has claimed",eth(r.creator_eth),r.burn_eth>0?("burn machine: "+eth(r.burn_eth)):"40% of ETH side fees is theirs")+
       dc("Backing",(r.backing==null?"—":(r.backing*100).toFixed(1)+"%"),"of "+usd(r.fdv)+" FDV is locked ETH")+
+      dc("Pool value, both sides",usd(r.pool_usd),usd(r.tok_side_usd)+" of it is the token's own unsold supply")+
     '</div>'+
     (evs?('<div class="evlist">'+evs+'</div>'):'')+
     '<div class="dlinks">'+
@@ -430,13 +434,15 @@ fetch(DATA+"?t="+Math.floor(Date.now()/3e5)).then(function(r){
   if(!r.ok)throw new Error(r.status);return r.json()
 }).then(function(d){
   state.rows=d.rows||[];
+  state.rows.forEach(function(r){
+    r.pool_usd=(r.depth_usd==null&&r.tok_side_usd==null)?null:(r.depth_usd||0)+(r.tok_side_usd||0)});
   renderStats(d.eco||{});
   renderTape(d.tape||[]);
   sortRows();renderTable();
   $("#upd").innerHTML='<span class="dot"></span>chain data as of '+ago(d.updated)+
     ' · scanned to block '+(d.eco&&d.eco.scan_to?d.eco.scan_to.toLocaleString("en-US"):"?");
 }).catch(function(e){
-  $("#tbody").innerHTML='<tr><td colspan="11"><div class="loading">data unavailable right now. try a refresh.</div></td></tr>';
+  $("#tbody").innerHTML='<tr><td colspan="12"><div class="loading">data unavailable right now. try a refresh.</div></td></tr>';
 });
 })();
 </script>

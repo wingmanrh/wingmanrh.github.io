@@ -556,7 +556,7 @@ def main():
     # liquidity (comfortably covers the 300-row leaderboard even in singles mode)
     by_liq = sorted(api.values(),
                     key=lambda r: -(r.get("poolStats", {}).get("liquidityUsd") or 0))
-    depths = fetch_depths([rec["poolId"] for rec in by_liq[:450] if rec.get("poolId")])
+    depths = fetch_depths([rec["poolId"] for rec in by_liq[:550] if rec.get("poolId")])
 
     # 4b. fold dust tokens into the pruned aggregate (never prunes API-listed tokens;
     # a revived token restarts a fresh entry — understatement bounded by the tiny floor)
@@ -690,7 +690,7 @@ def main():
     tape_ui = [[r[0], r[1], r[2], sym_by_addr.get(r[2]), round(int(r[3]) / 1e18, 6),
                 round(int(r[4]) / 1e18, 2), r[5]] for r in reversed(fly["tape"])]
 
-    lb = {"updated": now, "eco": eco, "tape": tape_ui, "rows": rows_lb[:300]}
+    lb = {"updated": now, "eco": eco, "tape": tape_ui, "rows": rows_lb[:500]}
 
     # 7. digest ------------------------------------------------------------
     dg = [f"THICC digest {time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime(now))}",
