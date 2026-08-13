@@ -3,6 +3,10 @@ on:
   schedule:
     - cron: "9,39 * * * *"
   workflow_dispatch: {}
+  push:
+    paths:
+      - "thicc/pipeline/**"
+      - ".github/workflows/thicc.yml"
 permissions:
   contents: write
 concurrency:
