@@ -92,9 +92,9 @@ _last_rpc = [0.0]
 RPC_GAP = float(os.environ.get("THICC_RPC_GAP", "0.45"))
 RATE_ERRORS = ("Too Many Requests", "429")
 
-def _rpc_send(payload, timeout):
+def _rpc_send(payload, timeout, rate_attempts=12):
     """One JSON-RPC POST with pacing + rate-limit-aware retry (wait, never shrink)."""
-    for attempt in range(12):
+    for attempt in range(rate_attempts):
         wait = _last_rpc[0] + RPC_GAP - time.time()
         if wait > 0:
             time.sleep(wait)
@@ -102,7 +102,7 @@ def _rpc_send(payload, timeout):
         try:
             d = curl(RPC, payload, timeout, retries=1)
         except RuntimeError as e:
-            if attempt == 11:
+            if attempt == rate_attempts - 1:
                 raise
             time.sleep(min(60, 5 * (attempt + 1)))
             continue
@@ -126,29 +126,39 @@ def rpc(method, params, timeout=60):
         raise RuntimeError(f"rpc {method}: {d['error'].get('message','')[:200]}")
     return d["result"]
 
+_batch_mode = ["full"]  # sticky per-run: 'full' -> 'ten' -> 'single'
+
 def rpc_batch(calls, timeout=90):
     """calls: list of (method, params). Returns results in order; raises on any error.
-    The RHC limiter weighs batch size: when a batch is persistently rejected, downshift
-    to 10-item batches, then to paced single calls (which pass when batches don't)."""
+    The RHC limiter weighs batch size (single calls pass when batches don't), so probe
+    each batch size with only 2 attempts, downshift on rejection, and REMEMBER the
+    working mode for the rest of the run — re-probing dead levels costs minutes each."""
     if os.environ.get("THICC_SINGLES"):
-        return [rpc(m, p, timeout) for m, p in calls]
-    try:
-        return _rpc_batch_once(calls, timeout)
-    except RuntimeError as e:
-        if "rate limited" not in str(e):
-            raise
-    if len(calls) > 10:
-        log(f"batch({len(calls)}) rate-rejected, downshifting to 10")
-        out = []
-        for i in range(0, len(calls), 10):
-            out.extend(rpc_batch(calls[i:i + 10], timeout))
-        return out
-    log(f"batch({len(calls)}) rate-rejected, downshifting to singles")
+        _batch_mode[0] = "single"
+    if _batch_mode[0] == "full":
+        try:
+            return _rpc_batch_once(calls, timeout, rate_attempts=2)
+        except RuntimeError as e:
+            if "rate limited" not in str(e):
+                raise
+            _batch_mode[0] = "ten"
+            log(f"batch({len(calls)}) rate-rejected, run downshifts to 10")
+    if _batch_mode[0] == "ten":
+        try:
+            out = []
+            for i in range(0, len(calls), 10):
+                out.extend(_rpc_batch_once(calls[i:i + 10], timeout, rate_attempts=2))
+            return out
+        except RuntimeError as e:
+            if "rate limited" not in str(e):
+                raise
+            _batch_mode[0] = "single"
+            log("10-batches rate-rejected, run downshifts to singles")
     return [rpc(m, p, timeout) for m, p in calls]
 
-def _rpc_batch_once(calls, timeout):
+def _rpc_batch_once(calls, timeout, rate_attempts=12):
     payload = [{"jsonrpc": "2.0", "id": i, "method": m, "params": p} for i, (m, p) in enumerate(calls)]
-    d = _rpc_send(payload, timeout)
+    d = _rpc_send(payload, timeout, rate_attempts=rate_attempts)
     if isinstance(d, dict):
         raise RuntimeError(f"rpc batch: {json.dumps(d)[:200]}")
     out = [None] * len(calls)
@@ -535,7 +545,11 @@ def main():
     if not (500 < ethusd < 20000):
         log(f"GATE: implausible ETHUSD {ethusd} — aborting"); return 1
 
-    depths = fetch_depths([rec["poolId"] for rec in api.values() if rec.get("poolId")])
+    # depth reads are the heaviest RPC phase; cap to the top pools by reported
+    # liquidity (comfortably covers the 300-row leaderboard even in singles mode)
+    by_liq = sorted(api.values(),
+                    key=lambda r: -(r.get("poolStats", {}).get("liquidityUsd") or 0))
+    depths = fetch_depths([rec["poolId"] for rec in by_liq[:450] if rec.get("poolId")])
 
     # 5. series ------------------------------------------------------------
     for a, rec in api.items():
