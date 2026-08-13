@@ -62,6 +62,13 @@ BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(BASE, "data")
 
 SORTS = ["volume", "trending", "recency", "linked-x"]
+
+# dust pruning: fold per-token history into an aggregate once a token has been
+# quiet this long AND its lifetime totals are below this floor. Bounds
+# flywheel.json to ACTIVE tokens (the chain mints ~3k dust launches/day);
+# ecosystem totals stay exact because the aggregate keeps every wei.
+PRUNE_AGE_S = 10 * 86400
+PRUNE_ETH_WEI = 5 * 10**15   # 0.005 ETH lifetime across fly+creator+burn
 TIERS = [(500_000, "ABSOLUTE UNIT"), (100_000, "THICC"), (10_000, "THICK"), (0, "SLIM")]
 
 def log(*a):
@@ -551,6 +558,31 @@ def main():
                     key=lambda r: -(r.get("poolStats", {}).get("liquidityUsd") or 0))
     depths = fetch_depths([rec["poolId"] for rec in by_liq[:450] if rec.get("poolId")])
 
+    # 4b. fold dust tokens into the pruned aggregate (never prunes API-listed tokens;
+    # a revived token restarts a fresh entry — understatement bounded by the tiny floor)
+    pr = fly.setdefault("pruned", {"fly_eth": "0", "fly_tok": "0", "creator_eth": "0",
+                                   "collected_eth": "0", "burn_eth": "0",
+                                   "n_tokens": 0, "n_compounds": 0})
+    prune_cutoff = now - PRUNE_AGE_S
+    drop = []
+    for a, t in fly["tokens"].items():
+        if a in api:
+            continue
+        last = t["ev"][-1][0] if t.get("ev") else t.get("first_seen", 0)
+        tot = (int(t.get("fly_eth", "0")) + int(t.get("creator_eth", "0"))
+               + int(t.get("burn_eth", "0")))
+        if last < prune_cutoff and tot < PRUNE_ETH_WEI:
+            for k in ("fly_eth", "fly_tok", "creator_eth", "collected_eth", "burn_eth"):
+                pr[k] = str(int(pr[k]) + int(t.get(k, "0")))
+            pr["n_compounds"] += t.get("n_compounds", 0)
+            pr["n_tokens"] += 1
+            drop.append(a)
+    for a in drop:
+        del fly["tokens"][a]
+    if drop:
+        log(f"pruned {len(drop)} dust tokens into aggregate "
+            f"(lifetime pruned: {pr['n_tokens']})")
+
     # 5. series ------------------------------------------------------------
     for a, rec in api.items():
         ps = rec.get("poolStats", {})
@@ -640,13 +672,17 @@ def main():
         "total_depth_eth": round(sum(r["depth_eth"] or 0 for r in rows_lb), 2),
         "total_depth_usd": round(sum(r["depth_usd"] or 0 for r in rows_lb)),
         "total_fly_eth": round((sum(int(t.get("fly_eth", "0")) for t in fly["tokens"].values())
-                                + int(fly.get("unattributed", {}).get("fly_eth", "0"))) / 1e18, 4),
-        "total_creator_eth": round(sum(int(t.get("creator_eth", "0")) for t in fly["tokens"].values()) / 1e18, 4),
-        "total_burn_eth": round(sum(int(t.get("burn_eth", "0")) for t in fly["tokens"].values()) / 1e18, 4),
+                                + int(fly.get("unattributed", {}).get("fly_eth", "0"))
+                                + int(pr["fly_eth"])) / 1e18, 4),
+        "total_creator_eth": round((sum(int(t.get("creator_eth", "0")) for t in fly["tokens"].values())
+                                    + int(pr["creator_eth"])) / 1e18, 4),
+        "total_burn_eth": round((sum(int(t.get("burn_eth", "0")) for t in fly["tokens"].values())
+                                 + int(pr["burn_eth"])) / 1e18, 4),
         "fly_24h_eth": round(sum(r["fly_d1"] for r in rows_lb), 4),
         "n_tokens_api": len(api),
         "n_tokens_fly": len(fly["tokens"]),
-        "n_compounds": sum(t.get("n_compounds", 0) for t in fly["tokens"].values()),
+        "n_compounds": (sum(t.get("n_compounds", 0) for t in fly["tokens"].values())
+                        + pr["n_compounds"]),
         "scan_from": GENESIS_BLOCK, "scan_to": to_block,
     }
 
