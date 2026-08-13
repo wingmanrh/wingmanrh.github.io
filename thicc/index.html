@@ -93,17 +93,8 @@ nav .links{margin-left:auto;display:flex;gap:.5rem;align-items:center}
 .panel{background:var(--card);border:var(--bw) solid var(--border);border-radius:20px;overflow:hidden}
 @media (max-width:768px){.panel{background:var(--bg);border:none;border-radius:0}}
 
-/* tape */
-.tape{margin-bottom:1rem}
-.tape .thead{display:flex;align-items:center;padding:.6rem 1.25rem;border-bottom:var(--bw) solid var(--border)}
-.tape .label{font-size:.688rem;letter-spacing:.05em;color:var(--fg3)}
-.tapescroll{display:flex;gap:.5rem;overflow-x:auto;padding:.7rem 1.25rem;scrollbar-width:none}
-.tapescroll::-webkit-scrollbar{display:none}
-.tev{flex:0 0 auto;display:inline-flex;align-items:center;gap:.4rem;font-size:.688rem;line-height:1;
-  min-height:22px;padding:0 .625rem;border-radius:120px;background:var(--secondary);color:var(--fg2);white-space:nowrap}
-.tev b{font-weight:400;color:var(--fg)}
+/* event-kind colors (used in the token detail event list) */
 .k-c{color:var(--info-fg)} .k-r{color:var(--warning-fg)} .k-b{color:var(--destructive-fg)} .k-o{color:var(--fg3)}
-.tev .ago{color:var(--fg3)}
 
 /* table panel: toolbar + hairline + internally scrolling table w/ sticky header */
 .toolbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.25rem}
@@ -144,7 +135,6 @@ tbody tr:last-child .ci{border-bottom:0}
   display:flex;align-items:center;justify-content:center;font-size:.7rem}
 .tok .nm{font-size:.813rem;line-height:normal;color:var(--fg)}
 .tok .sub{font-size:.688rem;line-height:normal;color:var(--fg3);max-width:9rem;overflow:hidden;text-overflow:ellipsis}
-.xv{color:var(--info-fg);font-size:.65rem}
 .pos{color:var(--success-fg)} .neg{color:var(--destructive-fg)}
 .badge{display:inline-flex;align-items:center;height:18px;padding:0 .5rem;border-radius:9999px;
   font-size:.688rem;font-weight:400;line-height:1;white-space:nowrap}
@@ -226,11 +216,6 @@ footer a:hover{color:var(--fg)}
   <div class="kpis" id="kpis"></div>
 </div>
 <p class="upd" id="upd"><span class="dot"></span>loading data…</p>
-</div>
-
-<div class="panel tape" id="tape" hidden>
-  <div class="thead"><span class="label">LIVE · fees getting locked back into pools, straight from the chain</span></div>
-  <div class="tapescroll" id="tapescroll"></div>
 </div>
 
 <div class="panel">
@@ -536,7 +521,6 @@ function tokCell(r){
   var img=r.img?'<img src="'+esc(r.img)+'" loading="lazy" onerror="this.outerHTML=\'<span class=ph>'+esc(r.emoji||"·")+'</span>\'">'
               :'<span class="ph">'+esc(r.emoji||"·")+'</span>';
   return '<div class="tok">'+img+'<div class="two" style="gap:2px"><span class="nm">'+esc(r.sym||"?")+
-    (r.xv?' <span class="xv" title="X verified">✓</span>':"")+
     '</span><span class="sub">'+esc(r.name||"")+'</span></div></div>'}
 function pill(t){return '<span class="tagpill">'+t+'</span>'}
 function twoCell(main,sub){return '<div class="two"><span class="v13">'+main+'</span>'+(sub?pill(sub):'')+'</div>'}
@@ -561,15 +545,6 @@ function renderHead(eco){
 }
 
 var KINDS={c:["fees locked","k-c"],r:["creator claim","k-r"],b:["burn","k-b"],o:["claim","k-o"]};
-function renderTape(tape){
-  if(!tape||!tape.length)return;
-  $("#tape").hidden=false;
-  $("#tapescroll").innerHTML=tape.slice(0,40).map(function(e){
-    var k=KINDS[e[1]]||KINDS.o;
-    return '<span class="tev"><span class="'+k[1]+'">'+k[0]+'</span><b>'+esc(e[3]||e[2].slice(0,8))+'</b>'+
-      (e[4]?'<span>'+fmt(e[4],4)+' Ξ</span>':'')+'<span class="ago">'+ago(e[0])+'</span></span>'}).join("");
-}
-
 function sortRows(){
   var k=state.sortK,d=state.sortDir;
   state.rows.sort(function(a,b){
@@ -670,7 +645,6 @@ fetch(DATA+"?t="+Math.floor(Date.now()/3e5)).then(function(r){
   state.rows.forEach(function(r){
     r.pool_usd=(r.depth_usd==null&&r.tok_side_usd==null)?null:(r.depth_usd||0)+(r.tok_side_usd||0)});
   renderHead(d.eco||{});
-  renderTape(d.tape||[]);
   sortRows();renderTable();
   $("#upd").innerHTML='<span class="dot"></span>chain data as of '+ago(d.updated)+
     ' · scanned to block '+(d.eco&&d.eco.scan_to?d.eco.scan_to.toLocaleString("en-US"):"?");
