@@ -117,7 +117,8 @@ nav .links{margin-left:auto;display:flex;gap:.5rem;align-items:center}
   font-size:.75rem;line-height:normal}
 .search input:focus{outline:none}
 .search input::placeholder{color:var(--fg3)}
-.tblregion{border-top:var(--bw) solid var(--border);max-height:74vh;overflow:auto}
+.tblregion{border-top:var(--bw) solid var(--border);overflow-x:auto}
+.tblregion.scrolly{max-height:74vh;overflow-y:auto}
 table{width:100%;background:var(--card);border-collapse:separate;border-spacing:0;text-align:left}
 @media (max-width:768px){table{background:var(--bg)}}
 th{position:sticky;top:0;z-index:1;height:36px;padding:.5rem 1.25rem .5rem 1.25rem;background:var(--card);
@@ -590,6 +591,8 @@ function renderTable(){
     ("Showing the top 10. Search to see any of the "+total+" tracked tokens.");
   var hint=$("#hint");
   if(hint)hint.textContent=q?"":"top 10 by ETH in pool";
+  var reg=document.querySelector(".tblregion");
+  if(reg)reg.classList.toggle("scrolly",!!q);
   var h=rows.map(function(r){
     var open=state.openAddr===r.a;
     var tr='<tr data-a="'+r.a+'" class="'+(open?"open":"")+'">'+
