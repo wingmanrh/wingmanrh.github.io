@@ -121,6 +121,8 @@ td.num,th.num{text-align:right;font-family:var(--mono);font-size:.78rem}
 .b-thicc{background:var(--success);color:var(--success-fg)}
 .b-thick{background:var(--warning);color:var(--warning-fg)}
 .b-slim{background:var(--muted);color:var(--muted-fg)}
+.tblfoot{padding:.55rem .9rem;border-top:1px solid var(--border);background:var(--muted);
+  font-family:var(--mono);font-size:.688rem;letter-spacing:.04em;color:var(--muted-fg)}
 .spark{display:block}
 .spark polyline{fill:none;stroke:var(--primary);stroke-width:1.5}
 
@@ -210,6 +212,7 @@ footer a:hover{color:var(--fg)}
       <tbody id="tbody"><tr><td colspan="10"><div class="loading">reading the chain…</div></td></tr></tbody>
     </table>
   </div>
+  <div class="tblfoot" id="tblfoot"></div>
 </div>
 
 <section class="method" id="method">
@@ -355,6 +358,11 @@ function renderTable(){
   var q=($("#q").value||"").toLowerCase().trim();
   var rows=state.rows.filter(function(r){
     return !q||(r.sym||"").toLowerCase().indexOf(q)>=0||(r.name||"").toLowerCase().indexOf(q)>=0||r.a.indexOf(q)>=0});
+  var total=state.rows.length, matches=rows.length;
+  if(!q)rows=rows.slice(0,10);
+  var foot=$("#tblfoot");
+  if(foot)foot.textContent=q?(matches+" of "+total+" tracked tokens match"):
+    ("Showing the top 10. Search to see any of the "+total+" tracked tokens.");
   var h=rows.map(function(r){
     var open=state.openAddr===r.a;
     var tr='<tr data-a="'+r.a+'" class="'+(open?"open":"")+'">'+
