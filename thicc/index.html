@@ -165,23 +165,36 @@ tr.detail .dwrap{padding:1.25rem;border-bottom:var(--bw) solid var(--border)}
 .evrow:last-child{border-bottom:none}
 .evrow .when{color:var(--fg3);width:9.5rem;flex:0 0 auto}
 
-/* methodology */
-.method{margin-top:3rem;padding:0 .25rem}
-.method h2{font-size:1.875rem;font-weight:300;line-height:1.2;margin-bottom:.5rem}
-.method .lead{color:var(--fg2);font-size:.938rem;font-weight:300;max-width:46rem;margin-bottom:1.25rem}
-.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:.75rem}
-.mcard{background:var(--card);border:var(--bw) solid var(--border);border-radius:20px;padding:1.25rem}
-.mcard .chip{width:2.75rem;height:2.75rem;border-radius:12px;background:var(--info);border:var(--bw) solid var(--border);
-  display:flex;align-items:center;justify-content:center;color:var(--primary);margin-bottom:1rem}
-.mcard .chip svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.25}
-.mcard h3{font-size:1.05rem;font-weight:400;margin-bottom:.35rem}
-.mcard p{font-size:.813rem;color:var(--fg2);font-weight:300}
-.mcard code{border:var(--bw) solid var(--border);background:var(--muted);border-radius:5px;padding:1px 4px;
-  font-family:var(--mono);font-size:.688rem;color:var(--fg);word-break:break-all}
-.mcard ul{list-style:none;margin-top:.5rem}
-.mcard li{font-size:.75rem;color:var(--fg3);padding:.3rem 0;border-bottom:var(--bw) solid var(--border);font-weight:300}
-.mcard li:last-child{border-bottom:none}
-.mcard a{color:var(--info-fg)}
+/* how it works: centered 3-step (Morpho fd-step numbered chips) */
+.method{margin-top:4.5rem;padding:0 .25rem;display:flex;flex-direction:column;align-items:center;text-align:center}
+.kick2{display:inline-flex;align-items:center;height:22px;padding:0 .75rem;border-radius:999px;
+  border:var(--bw) solid var(--border);font-family:var(--mono);font-size:.688rem;letter-spacing:.09em;
+  color:var(--fg3);text-transform:uppercase}
+.method h2{font-size:1.875rem;font-weight:300;line-height:1.2;margin:1rem 0 2.5rem}
+.steps{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;width:100%;max-width:56rem}
+.steps:before{content:"";position:absolute;top:22px;left:16.6%;right:16.6%;height:var(--bw);background:var(--border)}
+.stp{position:relative;display:flex;flex-direction:column;align-items:center;gap:.55rem;padding:0 .75rem}
+.schip{width:44px;height:44px;border-radius:50%;background:var(--card);border:var(--bw) solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:.938rem;color:var(--fg)}
+.stp h3{font-size:.938rem;font-weight:400;margin-top:.35rem}
+.stp p{font-size:.813rem;font-weight:300;color:var(--fg3);max-width:15rem}
+.strust{margin-top:2.75rem;font-size:.813rem;font-weight:300;color:var(--fg2)}
+.vdet{margin-top:.6rem;display:flex;flex-direction:column;align-items:center}
+.vsum{border:none;background:none;cursor:pointer;font-family:var(--sans);font-size:.75rem;color:var(--info-fg);padding:.2rem .4rem}
+.vsum:hover{text-decoration:underline}
+.vwrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s var(--ease)}
+.vwrap.open{grid-template-rows:1fr}
+.vinner{overflow:hidden;min-height:0}
+.vbox{background:var(--card);border:var(--bw) solid var(--border);border-radius:12px;padding:.9rem 1.1rem;
+  max-width:38rem;text-align:left;margin-top:.9rem}
+.vbox div{font-family:var(--mono);font-size:.688rem;color:var(--fg3);padding:.28rem 0;
+  border-bottom:var(--bw) solid var(--border);word-break:normal;overflow-wrap:anywhere}
+.vbox div:last-child{border-bottom:none}
+.vbox b{font-weight:400;color:var(--fg2)}
+@media (max-width:640px){
+  .steps{grid-template-columns:1fr;gap:1.75rem}
+  .steps:before{display:none}
+}
 
 footer{max-width:1500px;margin:0 auto;padding:2rem calc(var(--frame) + 1rem);display:flex;flex-wrap:wrap;gap:1rem;
   align-items:center;justify-content:space-between;font-size:.75rem;color:var(--fg3)}
@@ -247,48 +260,36 @@ footer a:hover{color:var(--fg)}
 </div>
 
 <section class="method" id="method">
-  <h2>How THICC works</h2>
-  <p class="lead">Everything on this page comes from public data anyone can check. No accounts, no backend, no trust needed. Here is exactly what each number means.</p>
-  <div class="mgrid">
-    <div class="mcard">
-      <div class="chip"><svg viewBox="0 0 20 20"><path d="M10 2v16M4 6c0 6 2.5 10 6 12 3.5-2 6-6 6-12l-6-4z" stroke-linejoin="round"/></svg></div>
-      <h3>ETH in pool</h3>
-      <p>The main number. We read each pool straight from the chain and compute exactly how much ETH sits inside right now. Every buy pushes ETH in. Nobody can ever take it out.</p>
-      <ul>
-        <li>Read via StateView <code>0xF3334192D15450CdD385c8B70e03f9A6bD9E673b</code></li>
-        <li>Formula: amount0 over the curve range, ticks <code>-160100…198050</code></li>
-        <li>Exact for standard launches. Legacy pools (pre Aug 5) are slightly undercounted.</li>
-        <li>Pool value shows both sides. The token half is the pool's own unsold supply at spot, so it moves with price, not with new money. We show it but never rank by it.</li>
-      </ul>
+  <span class="kick2">How it works</span>
+  <h2>Deep pools don't lie.</h2>
+  <div class="steps">
+    <div class="stp">
+      <div class="schip">1</div>
+      <h3>People buy</h3>
+      <p>Every buy pushes real ETH into the token's pool.</p>
     </div>
-    <div class="mcard">
-      <div class="chip"><svg viewBox="0 0 20 20"><path d="M10 3a7 7 0 1 1-6.3 4M3 3v4h4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <h3>Fees locked</h3>
-      <p>Every trade pays a 0.25% fee. Most of it gets bought back into the locked pool, forever. This column counts every one of those events since the platform launched. It only ever goes up.</p>
-      <ul>
-        <li>Event <code>Claimed</code> on the compounder <code>0xf9526Dd3…E99a</code></li>
-        <li>Full history scanned from block 22,754,669 (Jul 29)</li>
-        <li>A tiny share (~3% measured) pays the bots that trigger it</li>
-      </ul>
+    <div class="stp">
+      <div class="schip">2</div>
+      <h3>The pool locks it</h3>
+      <p>Nothing can take it out. Not even the creator. Ever.</p>
     </div>
-    <div class="mcard">
-      <div class="chip"><svg viewBox="0 0 20 20"><path d="M3 17V8m7 9V3m7 14v-6" stroke-linecap="round"/></svg></div>
-      <h3>Backing</h3>
-      <p>ETH in pool divided by market cap: how much of this token's market cap is real money locked under it. You'll find it when you open a token's row. We keep it out of the main table because small tokens naturally show higher percentages, so comparing it across tokens misleads.</p>
-      <ul>
-        <li>Pure division, both inputs shown on this page</li>
-        <li>Never used for ranking or comparison</li>
-      </ul>
+    <div class="stp">
+      <div class="schip">3</div>
+      <h3>THICC ranks it</h3>
+      <p>More ETH locked, higher rank. You can't fake deep.</p>
     </div>
-    <div class="mcard">
-      <div class="chip"><svg viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" rx="3"/><path d="M7 10l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <h3>Why you can't fake it</h3>
-      <p>There is exactly one way up this board: real ETH trading on your token. Even trading with yourself to fake volume backfires, because every fake trade donates part of its fee into your locked pool. You can buy your rank, but the money stays locked under your holders. We are fine with that.</p>
-      <ul>
-        <li>Token ranks update about every 30 minutes</li>
-        <li>Built by <a href="https://wingmanrh.com">wingman</a>, the collab launch marketplace</li>
-      </ul>
+  </div>
+  <p class="strust">Every number is read straight from the chain.</p>
+  <div class="vdet">
+    <button class="vsum" id="vsum" type="button" aria-expanded="false">check it yourself</button>
+    <div class="vwrap" id="vwrap"><div class="vinner">
+    <div class="vbox">
+      <div><b>ETH in pool</b> · StateView 0xF3334192D15450CdD385c8B70e03f9A6bD9E673b · amount0 over ticks -160100…198050</div>
+      <div><b>Fees locked</b> · Claimed events on 0xf9526Dd3361fe0ba6b7a99533ed471D3E808E99a · scanned from block 22,754,669</div>
+      <div><b>Pool value</b> · both sides at spot · the token half is its own unsold supply, never used for ranking</div>
+      <div><b>Legacy pools</b> (before Aug 5) are slightly undercounted · ranks refresh about every 30 minutes</div>
     </div>
+    </div></div>
   </div>
 </section>
 </div>
@@ -315,6 +316,10 @@ var W=0,H=0,DPR=1,SURF=0;
 var bed=[],amb=[],drops=[],rips=[];
 var mx=-1e4,my=-1e4,smx=-1e4,smy=-1e4,mstr=0;
 var running=false,visible=true,last=0,vt=0,spawnAt=0;
+var S=1,bubbles=[];
+var FR={init:false,mode:"surf",x:0,dir:1,presence:1,baseSp:0,cool:0,
+  blinkAt:0,blinkUntil:0,surfUntil:0,pauseAt:0,pausing:false,
+  kick:0,bubbleAt:0,path:null};
 
 function rnd(a,b){return a+Math.random()*(b-a)}
 function fin(n,f){return isFinite(n)?n:f}
@@ -326,6 +331,11 @@ function size(){
   if(w===W&&h===H)return;
   W=w;H=h;cv.width=W;cv.height=H;
   SURF=H-Math.max(84*DPR,Math.min(H*.22,150*DPR));
+  S=DPR*Math.max(.8,Math.min(1.15,(W/DPR)/1400));
+  if(!FR.init){FR.init=true;FR.x=W*rnd(.3,.7);FR.dir=Math.random()<.5?-1:1;
+    FR.baseSp=rnd(.09,.14)*DPR;FR.surfUntil=9000+rnd(6000,14000);
+    FR.blinkAt=rnd(3000,7000);FR.pauseAt=rnd(3000,8000)}
+  FR.x=Math.min(W*.9,Math.max(W*.1,FR.x));
   seed();
 }
 function seed(){
@@ -343,9 +353,9 @@ function spawnDrop(){
   drops.push({x:rnd(W*.05,W*.95),y:-10*DPR,vy:rnd(1.7,2.5)*DPR*Math.max(.6,H/(760*DPR)),
     r:rnd(1.2,2)*DPR,sunk:false,sw:rnd(0,6.283)});
 }
-function splash(x){
-  rips.push({x:x,rx:3*DPR,vr:rnd(.85,1.25)*DPR,a:.20,d:0});
-  rips.push({x:x,rx:1.5*DPR,vr:rnd(.5,.75)*DPR,a:.12,d:14});
+function splash(x,sc){sc=sc||1;
+  rips.push({x:x,rx:3*DPR*sc,vr:rnd(.85,1.25)*DPR*sc,a:.20*Math.min(1,sc+.3),d:0});
+  rips.push({x:x,rx:1.5*DPR*sc,vr:rnd(.5,.75)*DPR*sc,a:.12*Math.min(1,sc+.3),d:14});
 }
 function step(dt){
   vt+=16.7*dt;
@@ -388,10 +398,145 @@ function water(alpha,amp,wl,speed,color){
       var dx=(x-smx)/(90*DPR);
       bulge=mstr*Math.exp(-dx*dx)*2.4*DPR*(smy<SURF?1:.35);
     }
-    var y=SURF+Math.sin(x/wl+vt*speed)*amp-bulge;
+    var y=SURF+Math.sin(x/wl+vt*speed)*amp-bulge-frogBump(x);
     x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
   }
   ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=1*DPR;ctx.stroke();ctx.globalAlpha=1;
+}
+function gauss(x,c,sg){var t=(x-c)/sg;return Math.exp(-t*t)}
+function frogBump(x){
+  if(FR.presence<=0)return 0;
+  var d=FR.dir,hx=FR.x;
+  var v=gauss(x,hx,5*S)*5*S+gauss(x,hx+8.3*S*d,3.6*S)*2.8*S;
+  var behind=(hx-x)*d;
+  if(behind>6*S&&behind<110*S&&FR.mode==="surf"&&!FR.pausing)
+    v+=Math.sin(behind/(9*S)-vt*.004)*1.05*S*Math.exp(-behind/(58*S));
+  return v*FR.presence;
+}
+function kickExt(p){
+  if(p<.12)return 1-p/.12;
+  if(p<.3){var u=(p-.12)/.18;return u*u*(3-2*u)}
+  return 1-.08*((p-.3)/.7);
+}
+function kickPulse(p){return(p>.12&&p<.3)?Math.sin((p-.12)/.18*Math.PI):0}
+function underPos(){
+  var P=FR.path,t=Math.min(1,P.t),u=1-t;
+  return {x:u*u*P.x0+2*u*t*P.cx+t*t*P.x1,
+          y:u*u*P.y0+2*u*t*P.cy+t*t*P.y1,
+          dx:2*(u*(P.cx-P.x0)+t*(P.x1-P.cx)),
+          dy:2*(u*(P.cy-P.y0)+t*(P.y1-P.cy))};
+}
+function startDive(startle){
+  FR.mode="dive";FR.cool=5000;
+  splash(FR.x,startle?.9:.6);
+  for(var i=0;i<(startle?3:2);i++)
+    bubbles.push({x:FR.x+rnd(-4,4)*S,y:SURF+rnd(6,14)*S,r:rnd(.7,1.3)*DPR,
+      vy:rnd(.5,.9)*DPR,w:rnd(0,6.283)});
+  var x1;
+  if(startle&&smx>-9000)x1=smx<W/2?rnd(W*.62,W*.88):rnd(W*.12,W*.38);
+  else if(FR.x<W*.5)x1=rnd(W*.55,W*.88);else x1=rnd(W*.12,W*.45);
+  FR.path={x0:FR.x,y0:SURF+12*S,cx:(FR.x+x1)/2,cy:SURF+(H-SURF)*rnd(.35,.68),
+    x1:x1,y1:SURF+10*S,t:0,dur:rnd(7500,12500)};
+  FR.dir=x1>FR.x?1:-1;FR.kick=0;FR.bubbleAt=vt+rnd(1500,4000);
+}
+function frogStep(dt){
+  var ms=16.7*dt;
+  FR.cool=Math.max(0,FR.cool-ms);
+  if(FR.mode==="surf"){
+    FR.presence=Math.min(1,FR.presence+.05*dt);
+    if(vt>FR.blinkAt){FR.blinkUntil=vt+150;FR.blinkAt=vt+rnd(4000,9000)}
+    if(vt>FR.pauseAt){FR.pausing=!FR.pausing;
+      FR.pauseAt=vt+(FR.pausing?rnd(1400,3200):rnd(3500,9000))}
+    if(!FR.pausing)FR.x+=FR.dir*FR.baseSp*(0.75+0.25*Math.sin(vt*.0009))*dt;
+    if(FR.cool<=0&&mstr>.15&&smx>-9000){
+      var dx=smx-FR.x,dy=smy-(SURF-3*S);
+      if(dx*dx+dy*dy<Math.pow(70*DPR,2)){startDive(true);return}
+    }
+    if(FR.x<W*.1||FR.x>W*.9||vt>FR.surfUntil)startDive(false);
+  }else if(FR.mode==="dive"){
+    FR.presence-=.05*dt;
+    if(FR.presence<=0){FR.presence=0;FR.mode="under"}
+  }else if(FR.mode==="under"){
+    FR.kick+=ms/3400;if(FR.kick>=1)FR.kick-=1;
+    FR.path.t+=ms/FR.path.dur*(0.35+1.15*kickPulse(FR.kick));
+    if(FR.path.t>=1){FR.mode="rise";FR.x=FR.path.x1;
+      splash(FR.x,.65);FR.surfUntil=vt+rnd(8000,17000)}
+    if(vt>FR.bubbleAt){var p=underPos();
+      bubbles.push({x:p.x,y:p.y-3*S,r:rnd(.7,1.4)*DPR,vy:rnd(.5,.9)*DPR,w:rnd(0,6.283)});
+      FR.bubbleAt=vt+rnd(2500,7000)}
+  }else if(FR.mode==="rise"){
+    FR.presence+=.055*dt;
+    if(FR.presence>=1){FR.presence=1;FR.mode="surf"}
+  }
+  for(var i=bubbles.length-1;i>=0;i--){var b=bubbles[i];
+    b.y-=b.vy*dt;b.w+=.1*dt;b.x+=Math.sin(b.w)*.15*DPR;
+    if(b.y<=SURF){splash(b.x,.4);bubbles.splice(i,1)}}
+}
+function frogDraw(){
+  var d=FR.dir;
+  if(FR.presence>0){
+    var bob=Math.sin(vt*.0012)*1.1*S,hx=FR.x;
+    var blink=vt<FR.blinkUntil?.15:1;
+    ctx.beginPath();ctx.arc(hx+1*S*d,SURF-3.6*S+bob*.4,1.2*S,0,6.283);
+    ctx.fillStyle="rgba(198,213,239,"+(.5*FR.presence*blink).toFixed(3)+")";ctx.fill();
+    ctx.beginPath();ctx.ellipse(hx-3*S*d,SURF+4.6*S,10*S,2.4*S,0,0,6.283);
+    ctx.fillStyle="rgba(87,146,255,"+(.05*FR.presence).toFixed(3)+")";ctx.fill();
+    if(FR.mode==="surf"&&!FR.pausing){
+      ctx.globalAlpha=.06*FR.presence;ctx.strokeStyle="#5792ff";ctx.lineWidth=1*DPR;
+      ctx.beginPath();ctx.moveTo(hx-6*S*d,SURF-.5*S);ctx.lineTo(hx-30*S*d,SURF-3.4*S);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(hx-6*S*d,SURF+.5*S);ctx.lineTo(hx-30*S*d,SURF+3.8*S);ctx.stroke();
+      ctx.globalAlpha=1;
+    }
+  }
+  if(FR.mode==="under"||FR.mode==="rise"||(FR.mode==="dive"&&FR.presence<.5)){
+    var p=underPos(),g=1.6*S,al=FR.mode==="under"?.16:.10;
+    var len=Math.hypot(p.dx,p.dy)||1,tx=p.dx/len,ty=p.dy/len;
+    ctx.save();ctx.translate(p.x,p.y);ctx.transform(tx,ty,-ty,tx,0,0);
+    if(tx<0)ctx.scale(1,-1);
+    ctx.strokeStyle="rgba(150,185,255,"+al.toFixed(3)+")";ctx.lineWidth=1*DPR;
+    ctx.beginPath();
+    ctx.moveTo(7.8*g,-.4*g);
+    ctx.quadraticCurveTo(6.8*g,-2.2*g,4.8*g,-2.8*g);
+    ctx.quadraticCurveTo(3.7*g,-4.3*g,2.6*g,-3.2*g);
+    ctx.quadraticCurveTo(-2*g,-3.4*g,-6.5*g,-1.8*g);
+    ctx.quadraticCurveTo(-9.2*g,-.2*g,-7.8*g,1.2*g);
+    ctx.quadraticCurveTo(-2*g,4.2*g,4*g,2.6*g);
+    ctx.quadraticCurveTo(7.2*g,1.6*g,7.8*g,-.4*g);
+    ctx.stroke();
+    ctx.beginPath();ctx.arc(3.6*g,-3.1*g,.75*g,0,6.283);
+    ctx.fillStyle="rgba(198,213,239,"+(al*1.7).toFixed(3)+")";ctx.fill();
+    var e=kickExt(FR.kick);
+    function L(x0,y0,x1,y1){return[x0+(x1-x0)*e,y0+(y1-y0)*e]}
+    function leg(ox,oy,alpha){
+      var hip=[(-6+ox)*g,(1+oy)*g],
+          kn=L((-3.4+ox)*g,(3.4+oy)*g,(-11.5+ox)*g,(2.6+oy)*g),
+          ft=L((-5.6+ox)*g,(4.8+oy)*g,(-17+ox)*g,(3.6+oy)*g);
+      ctx.globalAlpha=alpha;
+      ctx.beginPath();ctx.moveTo(hip[0],hip[1]);ctx.lineTo(kn[0],kn[1]);ctx.lineTo(ft[0],ft[1]);ctx.stroke();
+      if(e>.4){
+        var fdx=ft[0]-kn[0],fdy=ft[1]-kn[1],fl=Math.hypot(fdx,fdy)||1;fdx/=fl;fdy/=fl;
+        ctx.globalAlpha=alpha*(e-.4)/.6;
+        ctx.beginPath();
+        for(var w=-1;w<=1;w++){
+          var ca=Math.cos(w*.34),sa=Math.sin(w*.34);
+          ctx.moveTo(ft[0],ft[1]);
+          ctx.lineTo(ft[0]+(fdx*ca-fdy*sa)*2.6*g,ft[1]+(fdy*ca+fdx*sa)*2.6*g);
+        }
+        ctx.stroke();
+      }
+      ctx.globalAlpha=1;
+    }
+    leg(1,-1.3,.55);
+    leg(0,0,1);
+    ctx.globalAlpha=.55;
+    ctx.beginPath();ctx.moveTo(5*g,1.4*g);ctx.lineTo(4.2*g,3*g);ctx.lineTo(3.2*g,3.5*g);ctx.stroke();
+    ctx.globalAlpha=1;
+    ctx.beginPath();ctx.moveTo(4.2*g,2*g);ctx.lineTo(3.4*g,3.6*g);ctx.lineTo(2.4*g,4.1*g);ctx.stroke();
+    ctx.restore();
+  }
+  for(var i=0;i<bubbles.length;i++){var b=bubbles[i];
+    ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.283);
+    ctx.strokeStyle="rgba(150,185,255,.18)";ctx.lineWidth=1*DPR;ctx.stroke()}
 }
 function draw(){
   ctx.setTransform(1,0,0,1,0,0);
@@ -410,6 +555,7 @@ function draw(){
     ctx.beginPath();ctx.ellipse(rp.x,SURF,rp.rx,rp.rx*.22,0,0,6.283);
     ctx.globalAlpha=rp.a;ctx.strokeStyle="#5792ff";ctx.lineWidth=1*DPR;ctx.stroke();ctx.globalAlpha=1;
   }
+  frogDraw();
   var par=(smx>-9000)?(smx-W/2)*.012*mstr:0;
   for(i=0;i<bed.length;i++){var b=bed[i];
     var tw=.72+.28*Math.sin(vt*.0016+b.ph);
@@ -450,7 +596,7 @@ function frame(now){
   try{
     var dt=Math.min(3,Math.max(.2,(now-last)/16.7));last=now;
     if(W!==Math.round(cv.parentNode.getBoundingClientRect().width*DPR))size();
-    step(dt);draw();
+    step(dt);frogStep(dt);draw();
   }catch(e){}
   requestAnimationFrame(frame);
 }
@@ -458,7 +604,7 @@ function start(){if(running||reduce||!visible)return;running=true;last=performan
 function stop(){running=false}
 
 size();
-for(var i=0;i<520;i++)step(1);   /* prewarm ~8.5s so the page opens alive */
+for(var i=0;i<520;i++){step(1);frogStep(1)}   /* prewarm ~8.5s so the page opens alive */
 if(reduce){step(1);draw()}
 else{
   draw();
@@ -632,6 +778,11 @@ document.addEventListener("click",function(ev){
     renderTable()}
 });
 $("#q").addEventListener("input",renderTable);
+var vs=$("#vsum");
+if(vs)vs.addEventListener("click",function(){
+  var w=$("#vwrap"),open=w.classList.toggle("open");
+  vs.setAttribute("aria-expanded",open?"true":"false");
+});
 
 function loadFly(){
   fetch(FLY+"?t="+Math.floor(Date.now()/3e5)).then(function(r){return r.json()}).then(function(d){
