@@ -184,7 +184,7 @@ footer a:hover{color:var(--fg)}
 <section class="stats" id="stats"></section>
 
 <section class="tape" id="tape" hidden>
-  <div class="thead"><span class="label">LIVE FLYWHEEL TAPE · fees getting locked back into pools, straight from the chain</span></div>
+  <div class="thead"><span class="label">LIVE TAPE · fees getting locked back into pools, straight from the chain</span></div>
   <div class="tapescroll" id="tapescroll"></div>
 </section>
 
@@ -200,16 +200,14 @@ footer a:hover{color:var(--fg)}
         <th>Token</th>
         <th>Tier</th>
         <th class="num" data-k="depth_eth">ETH in pool <span class="arr" id="arr-depth_eth">▼</span></th>
-        <th class="num" data-k="dd1">24h Δ <span class="arr" id="arr-dd1"></span></th>
         <th class="num" data-k="pool_usd" title="Both sides of the pool in USD. Includes the pool's own unsold tokens at spot, so we show it but never rank by it.">Pool value <span class="arr" id="arr-pool_usd"></span></th>
-        <th class="num" data-k="fly_eth">Flywheel locked <span class="arr" id="arr-fly_eth"></span></th>
-        <th class="num" data-k="fly_d1">Fly 24h <span class="arr" id="arr-fly_d1"></span></th>
-        <th class="num" data-k="backing">Backing <span class="arr" id="arr-backing"></span></th>
+        <th class="num" data-k="fly_eth" title="Trading fees that were bought back into the locked pool, forever. All time.">Fees relocked <span class="arr" id="arr-fly_eth"></span></th>
+        <th class="num" data-k="fly_d1" title="Fees locked back into this pool in the last 24 hours.">Relocked 24h <span class="arr" id="arr-fly_d1"></span></th>
         <th class="num" data-k="fdv">FDV <span class="arr" id="arr-fdv"></span></th>
         <th class="num" data-k="vol24">Vol 24h <span class="arr" id="arr-vol24"></span></th>
         <th>7d depth</th>
       </tr></thead>
-      <tbody id="tbody"><tr><td colspan="12"><div class="loading">reading the chain…</div></td></tr></tbody>
+      <tbody id="tbody"><tr><td colspan="10"><div class="loading">reading the chain…</div></td></tr></tbody>
     </table>
   </div>
 </div>
@@ -231,7 +229,7 @@ footer a:hover{color:var(--fg)}
     </div>
     <div class="card">
       <div class="chip"><svg viewBox="0 0 20 20"><path d="M10 3a7 7 0 1 1-6.3 4M3 3v4h4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <h3>Flywheel locked</h3>
+      <h3>Fees relocked</h3>
       <p>Every trade pays a 0.25% fee. Most of it gets bought back into the locked pool, forever. This column counts every one of those events since the platform launched. It only ever goes up.</p>
       <ul>
         <li>Event <code>Claimed</code> on the compounder <code>0xf9526Dd3…E99a</code></li>
@@ -241,11 +239,11 @@ footer a:hover{color:var(--fg)}
     </div>
     <div class="card">
       <div class="chip"><svg viewBox="0 0 20 20"><path d="M3 17V8m7 9V3m7 14v-6" stroke-linecap="round"/></svg></div>
-      <h3>Backing</h3>
-      <p>ETH in pool divided by FDV. It answers one question: how much of this token's market cap is real money locked under it? High backing means the price stands on something. Low backing means it stands on air.</p>
+      <h3>Backing (in the token view)</h3>
+      <p>ETH in pool divided by FDV: how much of this token's market cap is real money locked under it. You'll find it when you open a token's row. We keep it out of the main table because small tokens naturally show higher percentages, so comparing it across tokens misleads.</p>
       <ul>
         <li>Pure division, both inputs shown on this page</li>
-        <li>Compare tokens at similar FDV for the fairest read</li>
+        <li>Never used for ranking or comparison</li>
       </ul>
     </div>
     <div class="card">
@@ -317,8 +315,8 @@ function renderStats(eco){
      t:"ETH locked in pools right now",v:eco.total_depth_eth,f:function(n){return fmt(n,0)+" Ξ"},
      foot:usd(eco.total_depth_usd)+" across "+eco.n_tokens_api+" tracked tokens"},
     {icon:'<path d="M10 3a7 7 0 1 1-6.3 4M3 3v4h4" stroke-linecap="round" stroke-linejoin="round"/>',
-     t:"Recycled by the flywheel, all time",v:eco.total_fly_eth,f:function(n){return fmt(n,1)+" Ξ"},
-     foot:eco.n_compounds+" compound events since Jul 29"},
+     t:"Fees locked back into pools, all time",v:eco.total_fly_eth,f:function(n){return fmt(n,1)+" Ξ"},
+     foot:eco.n_compounds+" relock events since Jul 29"},
     {icon:'<path d="M3 10h4l2-5 3 10 2-5h3" stroke-linecap="round" stroke-linejoin="round"/>',
      t:"Locked in the last 24h",v:eco.fly_24h_eth,f:function(n){return fmt(n,2)+" Ξ"},
      foot:"fees turned into permanent liquidity"},
@@ -332,7 +330,7 @@ function renderStats(eco){
   cards.forEach(function(c,i){countUp($("#cv"+i),c.v||0,c.f)});
 }
 
-var KINDS={c:["compound","locked into the pool","k-c"],r:["creator claim","claimed by the creator","k-r"],
+var KINDS={c:["fees relocked","locked into the pool","k-c"],r:["creator claim","claimed by the creator","k-r"],
            b:["burn","burn machine claim","k-b"],o:["claim","claim","k-o"]};
 function renderTape(tape){
   if(!tape||!tape.length)return;
@@ -364,17 +362,15 @@ function renderTable(){
       '<td>'+tokCell(r)+'</td>'+
       '<td>'+badge(r.tier)+'</td>'+
       '<td class="num"><b>'+eth(r.depth_eth)+'</b><br><span class="dim" style="font-size:.68rem">'+usd(r.depth_usd)+'</span></td>'+
-      '<td class="num">'+delta(r.dd1)+'</td>'+
       '<td class="num">'+usd(r.pool_usd)+'</td>'+
-      '<td class="num">'+eth(r.fly_eth)+(r.n_comp?'<br><span class="dim" style="font-size:.68rem">'+r.n_comp+' compounds</span>':'')+'</td>'+
+      '<td class="num">'+eth(r.fly_eth)+(r.n_comp?'<br><span class="dim" style="font-size:.68rem">'+r.n_comp+' times</span>':'')+'</td>'+
       '<td class="num">'+delta(r.fly_d1,4)+'</td>'+
-      '<td class="num">'+(r.backing==null?'<span class="dim">—</span>':(r.backing*100).toFixed(1)+"%")+'</td>'+
       '<td class="num">'+usd(r.fdv)+'</td>'+
       '<td class="num">'+usd(r.vol24)+'</td>'+
       '<td>'+spark(r.spark)+'</td></tr>';
     if(open)tr+=detailRow(r);
     return tr}).join("");
-  $("#tbody").innerHTML=h||'<tr><td colspan="12"><div class="loading">nothing matches</div></td></tr>';
+  $("#tbody").innerHTML=h||'<tr><td colspan="10"><div class="loading">nothing matches</div></td></tr>';
 }
 
 function detailRow(r){
@@ -382,10 +378,10 @@ function detailRow(r){
   var pt="https://pools.trade/t/"+r.a;
   var dx="https://dexscreener.com/robinhood/"+r.a;
   var evs=eventsFor(r.a);
-  return '<tr class="detail"><td colspan="12">'+
+  return '<tr class="detail"><td colspan="10">'+
     '<div class="dgrid">'+
       dc("ETH in pool",eth(r.depth_eth),usd(r.depth_usd)+" · tier "+r.tier)+
-      dc("Flywheel locked all time",eth(r.fly_eth),fmt(r.fly_tok,0)+" tokens relocked · "+r.n_comp+" events")+
+      dc("Fees relocked, all time",eth(r.fly_eth),fmt(r.fly_tok,0)+" tokens relocked · "+r.n_comp+" events")+
       dc("Creator has claimed",eth(r.creator_eth),r.burn_eth>0?("burn machine: "+eth(r.burn_eth)):"40% of ETH side fees is theirs")+
       dc("Backing",(r.backing==null?"—":(r.backing*100).toFixed(1)+"%"),"of "+usd(r.fdv)+" FDV is locked ETH")+
       dc("Pool value, both sides",usd(r.pool_usd),usd(r.tok_side_usd)+" of it is the token's own unsold supply")+
@@ -442,7 +438,7 @@ fetch(DATA+"?t="+Math.floor(Date.now()/3e5)).then(function(r){
   $("#upd").innerHTML='<span class="dot"></span>chain data as of '+ago(d.updated)+
     ' · scanned to block '+(d.eco&&d.eco.scan_to?d.eco.scan_to.toLocaleString("en-US"):"?");
 }).catch(function(e){
-  $("#tbody").innerHTML='<tr><td colspan="12"><div class="loading">data unavailable right now. try a refresh.</div></td></tr>';
+  $("#tbody").innerHTML='<tr><td colspan="10"><div class="loading">data unavailable right now. try a refresh.</div></td></tr>';
 });
 })();
 </script>
