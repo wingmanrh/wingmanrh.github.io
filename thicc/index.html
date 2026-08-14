@@ -786,7 +786,7 @@ function renderHead(eco){
     ["Fees locked, all time",fmt(eco.total_fly_eth,1)+" Ξ"],
     ["Locked last 24h",fmt(eco.fly_24h_eth,2)+" Ξ"],
     ["Claimed by creators",fmt(eco.total_creator_eth,1)+" Ξ"],
-    ["Sent to buy & burn",fmt(eco.total_burn_eth,1)+" Ξ"]
+    ["Already burned",fmt(eco.total_burn_eth,1)+" Ξ"]
   ];
   $("#kpis").innerHTML=pills.map(function(p){
     return '<div class="kpi"><span class="l">'+p[0]+'</span><span class="v">'+p[1]+'</span></div>'}).join("");
@@ -845,7 +845,7 @@ function detailRow(r){
     kv("Size",badge(r.tier))+
     kv("Fees locked back in",eth(r.fly_eth)+' Ξ <small>'+r.n_comp+' times</small>')+
     kv("Creator claimed",eth(r.creator_eth)+' Ξ')+
-    (r.burn_eth>0?kv("Sent to buy &amp; burn",eth(r.burn_eth)+' Ξ'):"")+
+    (r.burn_eth>0?kv("Already burned",eth(r.burn_eth)+' Ξ <small>bought back, gone for good</small>'):"")+
     (r.burn_eth>0&&r.creator_eth-r.burn_eth>0.0005?
       kv("Waiting to be burned",eth(r.creator_eth-r.burn_eth)+' Ξ <small>on its way</small>'):"")+
     kv("Backed by locked ETH",(r.backing==null?"—":(r.backing*100).toFixed(1)+'% <small>of market cap</small>'))+
