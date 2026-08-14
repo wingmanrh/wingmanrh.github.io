@@ -845,7 +845,7 @@ function detailRow(r){
     kv("Size",badge(r.tier))+
     kv("Fees locked back in",eth(r.fly_eth)+' Ξ <small>'+r.n_comp+' times</small>')+
     kv("Creator claimed",eth(r.creator_eth)+' Ξ')+
-    (r.burn_eth>0?kv("Already burned",eth(r.burn_eth)+' Ξ <small>bought back, gone for good</small>'):"")+
+    (r.burn_eth>0?kv("Already burned",eth(r.burn_eth)+' Ξ'):"")+
     (r.burn_eth>0&&r.creator_eth-r.burn_eth>0.0005?
       kv("Waiting to be burned",eth(r.creator_eth-r.burn_eth)+' Ξ <small>on its way</small>'):"")+
     kv("Backed by locked ETH",(r.backing==null?"—":(r.backing*100).toFixed(1)+'% <small>of market cap</small>'))+
