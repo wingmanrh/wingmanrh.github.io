@@ -144,25 +144,37 @@ tbody tr:last-child .ci{border-bottom:0}
 .spark{display:block}
 .tblfoot{padding:.65rem 1.25rem;border-top:var(--bw) solid var(--border);font-size:.688rem;color:var(--fg3)}
 
-/* expanded detail row */
+/* expanded detail row: animated unfold, two calm panels */
 tr.detail{cursor:default}
 tr.detail td{background:var(--bg)}
-tr.detail .dwrap{padding:1.25rem;border-bottom:var(--bw) solid var(--border)}
-.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.75rem}
-.dcard{background:var(--card);border:var(--bw) solid var(--border);border-radius:20px;padding:1.25rem;
-  display:flex;flex-direction:column;gap:.35rem}
-.dcard .lbl{font-size:.75rem;color:var(--fg2);line-height:1.3}
-.dcard .big{font-size:1.25rem;line-height:1.2;color:var(--fg)}
-.dcard .big small{font-size:1.25rem;color:var(--fg3);font-weight:400}
-.dcard .sub2{font-size:.75rem;color:var(--fg3);font-weight:300}
+.dcollapse{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--ease)}
+.dcollapse.open{grid-template-rows:1fr}
+.dinner{overflow:hidden;min-height:0;opacity:0;transition:opacity .3s var(--ease) .08s}
+.dcollapse.open .dinner{opacity:1}
+.dwrap{padding:1rem 1.25rem 1.5rem;border-bottom:var(--bw) solid var(--border)}
+.chev{display:inline-block;margin-left:.5rem;color:var(--fg3);font-size:.6rem;
+  transition:transform .3s var(--ease)}
+tr.open .chev{transform:rotate(180deg)}
+.dpanels{display:grid;grid-template-columns:minmax(17rem,26rem) 1fr;gap:.75rem}
+@media (max-width:860px){.dpanels{grid-template-columns:1fr}}
+.dpan{background:var(--card);border:var(--bw) solid var(--border);border-radius:16px;padding:.9rem 1.25rem}
+.dpan .pt{font-size:.688rem;letter-spacing:.07em;text-transform:uppercase;color:var(--fg3);
+  padding-bottom:.4rem;border-bottom:var(--bw) solid var(--border)}
+.kv{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.48rem 0;
+  border-bottom:var(--bw) solid var(--border);font-size:.813rem}
+.kv:last-child{border-bottom:none}
+.kv .k{color:var(--fg2);font-weight:300;white-space:nowrap}
+.kv .v{color:var(--fg);text-align:right}
+.kv .v small{color:var(--fg3);font-size:.75rem;font-weight:300}
+.act{display:flex;align-items:center;gap:.6rem;padding:.48rem 0;border-bottom:var(--bw) solid var(--border);
+  font-size:.813rem;color:var(--fg2);font-weight:300}
+.act:last-child{border-bottom:none}
+.act .adot{width:6px;height:6px;border-radius:50%;flex:0 0 auto}
+.act .when{margin-left:auto;color:var(--fg3);font-size:.75rem;white-space:nowrap}
+.d-c{background:var(--info-fg)} .d-r{background:var(--warning-fg)} .d-b{background:var(--destructive-fg)}
 .dlinks{display:flex;flex-wrap:wrap;gap:.375rem;margin-top:.75rem}
-.dlinks .btn{border-color:var(--border);background:var(--card)}
+.dlinks .btn{height:2.25rem;padding:.25rem .9rem;font-size:.75rem;border-color:var(--border);background:var(--card)}
 .dlinks .btn:hover{background:var(--accent)}
-.evlist{margin-top:.75rem;background:var(--card);border:var(--bw) solid var(--border);border-radius:20px;overflow:hidden}
-.evrow{display:flex;gap:.75rem;align-items:center;padding:.5rem 1.25rem;border-bottom:var(--bw) solid var(--border);
-  font-size:.75rem;color:var(--fg2)}
-.evrow:last-child{border-bottom:none}
-.evrow .when{color:var(--fg3);width:9.5rem;flex:0 0 auto}
 
 /* how it works: centered 3-step (Morpho fd-step numbered chips) */
 .method{margin-top:4.5rem;padding:0 .25rem;display:flex;flex-direction:column;align-items:center;text-align:center}
@@ -807,7 +819,7 @@ function renderTable(){
   var h=rows.map(function(r){
     var open=state.openAddr===r.a;
     var tr='<tr data-a="'+r.a+'" class="'+(open?"open":"")+'">'+
-      '<td><div class="ci rk">'+r.rank+'</div></td>'+
+      '<td><div class="ci rk">'+r.rank+'<span class="chev">▾</span></div></td>'+
       '<td><div class="ci">'+tokCell(r)+'</div></td>'+
       '<td><div class="ci">'+badge(r.tier)+'</div></td>'+
       '<td><div class="ci">'+twoCell(eth(r.depth_eth)+' <span class="mut">Ξ</span>',usd(r.depth_usd))+'</div></td>'+
@@ -826,34 +838,50 @@ function detailRow(r){
   var bs="https://robinhoodchain.blockscout.com/token/"+r.a;
   var pt="https://pools.trade/t/"+r.a;
   var dx="https://dexscreener.com/robinhood/"+r.a;
-  var evs=eventsFor(r.a);
-  return '<tr class="detail"><td colspan="10"><div class="dwrap">'+
-    '<div class="dgrid">'+
-      dc("ETH in pool",eth(r.depth_eth)+' <small>Ξ</small>',usd(r.depth_usd)+" · tier "+r.tier)+
-      dc("Fees locked, all time",eth(r.fly_eth)+' <small>Ξ</small>',fmt(r.fly_tok,0)+" tokens locked in · "+r.n_comp+" times")+
-      dc("Creator has claimed",eth(r.creator_eth)+' <small>Ξ</small>',r.burn_eth>0?("burn machine: "+eth(r.burn_eth)+" Ξ"):"creators get 40% of trading fees, paid in ETH")+
-      dc("Backing",(r.backing==null?"—":(r.backing*100).toFixed(1)+"%"),"of its "+usd(r.fdv)+" market cap is real locked ETH")+
-      dc("Pool value, both sides",usd(r.pool_usd),usd(r.tok_side_usd)+" of it is just its own unsold tokens")+
+  var acts=activityFor(r.a);
+  function kv(k,v){return '<div class="kv"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>'}
+  var rows=
+    kv("ETH locked in its pool",eth(r.depth_eth)+' Ξ <small>'+usd(r.depth_usd)+'</small>')+
+    kv("Size",badge(r.tier))+
+    kv("Fees locked back in",eth(r.fly_eth)+' Ξ <small>'+r.n_comp+' times</small>')+
+    kv("Creator claimed",eth(r.creator_eth)+' Ξ')+
+    (r.burn_eth>0?kv("Sent to buy &amp; burn",eth(r.burn_eth)+' Ξ'):"")+
+    (r.burn_eth>0&&r.creator_eth-r.burn_eth>0.0005?
+      kv("Waiting to be burned",eth(r.creator_eth-r.burn_eth)+' Ξ <small>on its way</small>'):"")+
+    kv("Backed by locked ETH",(r.backing==null?"—":(r.backing*100).toFixed(1)+'% <small>of market cap</small>'))+
+    kv("Whole pool is worth",usd(r.pool_usd)+' <small>'+usd(r.tok_side_usd)+' is its own tokens</small>');
+  return '<tr class="detail"><td colspan="10"><div class="dcollapse" id="dc-'+r.a+'"><div class="dinner"><div class="dwrap">'+
+    '<div class="dpanels">'+
+      '<div class="dpan"><div class="pt">The numbers</div>'+rows+'</div>'+
+      '<div class="dpan"><div class="pt">Recent activity</div>'+
+        (acts||'<div class="act"><span class="k" style="color:var(--fg3)">quiet so far</span></div>')+
+      '</div>'+
     '</div>'+
-    (evs?('<div class="evlist">'+evs+'</div>'):'')+
     '<div class="dlinks">'+
       '<a class="btn" href="'+pt+'" target="_blank" rel="noopener">pools.trade ↗</a>'+
       '<a class="btn" href="'+bs+'" target="_blank" rel="noopener">Blockscout ↗</a>'+
       '<a class="btn" href="'+dx+'" target="_blank" rel="noopener">DexScreener ↗</a>'+
       (r.x?'<a class="btn" href="'+esc(r.x)+'" target="_blank" rel="noopener">creator on X ↗</a>':'')+
-    '</div></div></td></tr>';
-  function dc(l,b,s){return '<div class="dcard"><div class="lbl">'+l+'</div><div class="big">'+b+'</div><div class="sub2">'+s+'</div></div>'}
+    '</div></div></div></div></td></tr>';
 }
 
-function eventsFor(a){
+function activityFor(a){
   if(!state.flyTokens)return "";
   var t=state.flyTokens[a];if(!t||!t.ev||!t.ev.length)return "";
-  return t.ev.slice(-12).reverse().map(function(e){
-    var k=KINDS[e[1]]||KINDS.o;
-    var n=e[4]>1?(" ×"+e[4]):"";
-    var when=e[4]>1?new Date(e[0]*1000).toISOString().slice(0,10)+" (day)":ago(e[0]);
-    return '<div class="evrow"><span class="when">'+when+'</span><span class="'+k[1]+'">'+k[0]+n+'</span>'+
-      '<span>'+fmt(parseInt(e[2])/1e18,5)+' Ξ</span></div>'}).join("");
+  var out=[],ev=t.ev;
+  for(var i=ev.length-1;i>=0&&out.length<8;i--){
+    var e=ev[i],kind=(e[1]||"").toLowerCase();
+    if(kind!=="c"&&kind!=="r"&&kind!=="b")continue;   // hide internal plumbing hops
+    var amt=fmt(parseInt(e[2])/1e18,4);
+    var txt=kind==="c"?(amt+" Ξ locked into the pool"):
+            kind==="r"?("creator claimed "+amt+" Ξ"):
+                       (amt+" Ξ bought &amp; burned");
+    if(e[4]>1)txt+=" · "+e[4]+" times";
+    var when=e[4]>1?new Date(e[0]*1000).toISOString().slice(5,10).replace("-","/"):ago(e[0]);
+    out.push('<div class="act"><span class="adot d-'+kind+'"></span><span>'+txt+'</span>'+
+      '<span class="when">'+when+'</span></div>');
+  }
+  return out.join("");
 }
 
 document.addEventListener("click",function(ev){
@@ -863,9 +891,19 @@ document.addEventListener("click",function(ev){
     sortRows();renderTable();return}
   var tr=ev.target.closest("tbody tr[data-a]");
   if(tr){var a=tr.getAttribute("data-a");
-    state.openAddr=state.openAddr===a?null:a;
-    if(state.openAddr&&!state.flyTokens)loadFly();
-    renderTable()}
+    if(state.openAddr===a){
+      var dc=document.getElementById("dc-"+a);
+      if(dc){dc.classList.remove("open");
+        setTimeout(function(){if(state.openAddr===a){state.openAddr=null;renderTable()}},360);
+      }else{state.openAddr=null;renderTable()}
+    }else{
+      state.openAddr=a;
+      if(!state.flyTokens)loadFly();
+      renderTable();
+      var el=document.getElementById("dc-"+a);
+      if(el)requestAnimationFrame(function(){requestAnimationFrame(function(){el.classList.add("open")})});
+    }
+  }
 });
 $("#q").addEventListener("input",renderTable);
 var vs=$("#vsum");
@@ -876,7 +914,10 @@ if(vs)vs.addEventListener("click",function(){
 
 function loadFly(){
   fetch(FLY+"?t="+Math.floor(Date.now()/3e5)).then(function(r){return r.json()}).then(function(d){
-    state.flyTokens=d.tokens||{};renderTable()}).catch(function(){})
+    state.flyTokens=d.tokens||{};renderTable();
+    var el=state.openAddr&&document.getElementById("dc-"+state.openAddr);
+    if(el)requestAnimationFrame(function(){requestAnimationFrame(function(){el.classList.add("open")})});
+  }).catch(function(){})
 }
 
 fetch(DATA+"?t="+Math.floor(Date.now()/3e5)).then(function(r){
