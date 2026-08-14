@@ -12,7 +12,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%232973ff'/%3E%3Ctext x='24' y='33' font-size='26' font-family='monospace' font-weight='700' text-anchor='middle' fill='white'%3ET%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
 /* tokens: Morpho APP dark theme, extracted from app.morpho.org 2026-08-13 */
 :root{
@@ -63,8 +63,7 @@ nav .links{margin-left:auto;display:flex;gap:.5rem;align-items:center}
 .phead{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.25rem;padding:2.5rem .25rem 1.5rem}
 .phead h1{font-family:var(--sans);font-weight:300;line-height:1.1;letter-spacing:.01em;
   font-size:clamp(4.5rem,13vw,9rem);
-  background:linear-gradient(180deg,#ffffff 8%,#ffffff30 92%);
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+  color:transparent;-webkit-text-fill-color:transparent;
   -webkit-user-select:none;user-select:none;cursor:default}
 .phead .sub{margin-top:.5rem;color:var(--fg2);font-size:.938rem;font-weight:300;max-width:40rem}
 .headline{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:1rem}
@@ -221,7 +220,7 @@ footer a:hover{color:var(--fg)}
 <canvas id="pond" aria-hidden="true"></canvas>
 <div class="phead">
   <h1>THICC</h1>
-  <p class="sub">Every pool on Robinhood Chain is locked forever. THICC ranks tokens by the real ETH inside. A price can be pumped with pocket change. This number can't.</p>
+  <p class="sub">Tokens ranked by the real ETH locked under them.</p>
   <div class="headline" id="headline" hidden>
     <span class="amt" id="hl-amt"></span><span class="unit">Ξ locked forever</span>
     <span class="tagpill" id="hl-usd"></span>
@@ -403,6 +402,95 @@ function water(alpha,amp,wl,speed,color){
   }
   ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=1*DPR;ctx.stroke();ctx.globalAlpha=1;
 }
+/* THE TITLE — THICC rained into place as ~1500 settled drops. It assembles from
+   falling rain, twinkles, swirls away from the cursor, and sheds the odd drop
+   into the pool below (which splashes, sinks, and joins the locked bed). */
+var TQ={parts:[],built:false,nextDrip:0};
+function buildTitle(){
+  var h1=document.querySelector(".phead h1");if(!h1)return;
+  var r=h1.getBoundingClientRect(),cr=cv.getBoundingClientRect();
+  if(r.width<20||r.height<10)return;
+  var w=Math.ceil(r.width*DPR),h=Math.ceil(r.height*DPR);
+  var oc=document.createElement("canvas");oc.width=w;oc.height=h;
+  var c2=oc.getContext("2d");
+  var fs=parseFloat(getComputedStyle(h1).fontSize)*DPR;
+  c2.font="500 "+fs+"px 'Space Grotesk',sans-serif";
+  c2.textAlign="center";c2.textBaseline="middle";
+  c2.fillStyle="#fff";c2.fillText("THICC",w/2,h/2+fs*.04);
+  var img;
+  try{img=c2.getImageData(0,0,w,h).data}catch(e){return}
+  var step=Math.max(3,Math.round(Math.sqrt(w*h)/52));
+  var ox=(r.left-cr.left)*DPR,oy=(r.top-cr.top)*DPR;
+  var tg=[];
+  for(var y=0;y<h;y+=step)for(var x=0;x<w;x+=step){
+    if(img[(y*w+x)*4+3]>128)
+      tg.push([ox+x+rnd(-.5,.5)*DPR,oy+y+rnd(-.5,.5)*DPR]);
+  }
+  if(tg.length<40)return;
+  function spawn(t,dmax){return {tx:t[0],ty:t[1],x:t[0]+rnd(-30,30)*DPR,y:t[1]-rnd(160,460)*DPR,
+    vx:0,vy:rnd(1.5,3)*DPR,delay:vt+rnd(0,dmax),set:0,ph:rnd(0,6.283),sz:rnd(.8,1.5)*DPR}}
+  if(TQ.built&&TQ.parts.length>40){
+    // re-target in place: particles glide to the new raster, no re-rain
+    var parts=TQ.parts,n=Math.min(parts.length,tg.length),i;
+    for(i=0;i<n;i++){parts[i].tx=tg[i][0];parts[i].ty=tg[i][1]}
+    for(i=parts.length;i<tg.length;i++)parts.push(spawn(tg[i],900));
+    parts.length=tg.length;
+  }else{
+    TQ.parts=[];
+    for(i=0;i<tg.length;i++)TQ.parts.push(spawn(tg[i],2400));
+    TQ.built=true;TQ.nextDrip=vt+4000;
+  }
+  if(reduce)for(i=0;i<TQ.parts.length;i++){var p=TQ.parts[i];p.x=p.tx;p.y=p.ty;p.set=1;p.delay=0}
+}
+function titleStep(dt){
+  if(!TQ.built)return;
+  var R=64*DPR;
+  for(var i=0;i<TQ.parts.length;i++){
+    var p=TQ.parts[i];
+    if(vt<p.delay)continue;
+    var dx=p.tx-p.x,dy=p.ty-p.y;
+    p.vx+=dx*.014*dt;p.vy+=dy*.014*dt;
+    if(mstr>.05&&smx>-9000&&p.set>.5){
+      var cx=p.x-smx,cy2=p.y-smy,d2=cx*cx+cy2*cy2;
+      if(d2<R*R&&d2>.01){
+        var d=Math.sqrt(d2),f=(1-d/R)*1.1*DPR*mstr;
+        p.vx+=cx/d*f*dt;p.vy+=cy2/d*f*dt;
+      }
+    }
+    var dp=Math.pow(.82,dt);p.vx*=dp;p.vy*=dp;
+    p.x+=p.vx*dt;p.y+=p.vy*dt;
+    var near=Math.abs(dx)+Math.abs(dy)<3*DPR&&Math.abs(p.vx)+Math.abs(p.vy)<1*DPR;
+    p.set+=((near?1:0)-p.set)*.06*dt;
+  }
+  if(vt>TQ.nextDrip&&!reduce){
+    TQ.nextDrip=vt+rnd(2600,6500);
+    var cand=[];
+    for(i=0;i<TQ.parts.length;i++)if(TQ.parts[i].set>.8)cand.push(i);
+    if(cand.length){
+      var p2=TQ.parts[cand[(Math.random()*cand.length)|0]];
+      drops.push({x:p2.x,y:p2.y,vy:rnd(.6,1.1)*DPR,r:p2.sz*1.1,sunk:false,sw:rnd(0,6.283)});
+      p2.x=p2.tx+rnd(-30,30)*DPR;p2.y=p2.ty-rnd(200,420)*DPR;
+      p2.vx=0;p2.vy=rnd(1.5,2.6)*DPR;p2.set=0;p2.delay=vt+rnd(400,1600);
+    }
+  }
+}
+function titleDraw(){
+  if(!TQ.built)return;
+  for(var i=0;i<TQ.parts.length;i++){
+    var p=TQ.parts[i];
+    if(vt<p.delay)continue;
+    var tw=.8+.2*Math.sin(vt*.0014+p.ph);
+    var al=(p.set>.5?(.42+.3*tw*p.set):.75);
+    if(p.set<.5&&p.vy>1*DPR){
+      var lg=ctx.createLinearGradient(p.x,p.y-10*DPR,p.x,p.y);
+      lg.addColorStop(0,"rgba(198,213,239,0)");lg.addColorStop(1,"rgba(198,213,239,.28)");
+      ctx.strokeStyle=lg;ctx.lineWidth=1*DPR;
+      ctx.beginPath();ctx.moveTo(p.x,p.y-10*DPR);ctx.lineTo(p.x,p.y);ctx.stroke();
+    }
+    ctx.beginPath();ctx.arc(p.x,p.y,p.sz,0,6.283);
+    ctx.fillStyle="rgba(205,222,246,"+al.toFixed(3)+")";ctx.fill();
+  }
+}
 function gauss(x,c,sg){var t=(x-c)/sg;return Math.exp(-t*t)}
 function frogBump(x){
   if(FR.presence<=0)return 0;
@@ -555,7 +643,7 @@ function draw(){
     ctx.beginPath();ctx.ellipse(rp.x,SURF,rp.rx,rp.rx*.22,0,0,6.283);
     ctx.globalAlpha=rp.a;ctx.strokeStyle="#5792ff";ctx.lineWidth=1*DPR;ctx.stroke();ctx.globalAlpha=1;
   }
-  frogDraw();
+  frogDraw();titleDraw();
   var par=(smx>-9000)?(smx-W/2)*.012*mstr:0;
   for(i=0;i<bed.length;i++){var b=bed[i];
     var tw=.72+.28*Math.sin(vt*.0016+b.ph);
@@ -596,7 +684,7 @@ function frame(now){
   try{
     var dt=Math.min(3,Math.max(.2,(now-last)/16.7));last=now;
     if(W!==Math.round(cv.parentNode.getBoundingClientRect().width*DPR))size();
-    step(dt);frogStep(dt);draw();
+    step(dt);frogStep(dt);titleStep(dt);draw();
   }catch(e){}
   requestAnimationFrame(frame);
 }
@@ -604,7 +692,9 @@ function start(){if(running||reduce||!visible)return;running=true;last=performan
 function stop(){running=false}
 
 size();
-for(var i=0;i<520;i++){step(1);frogStep(1)}   /* prewarm ~8.5s so the page opens alive */
+for(var i=0;i<520;i++){step(1);frogStep(1)}
+buildTitle();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){buildTitle()});   /* prewarm ~8.5s so the page opens alive */
 if(reduce){step(1);draw()}
 else{
   draw();
@@ -623,7 +713,7 @@ else{
     if(my<0||my>H||mx<0||mx>W){mx=-1e4;my=-1e4}
   },{passive:true});
   window.addEventListener("pointerleave",function(){mx=-1e4;my=-1e4});
-  window.addEventListener("resize",size);
+  window.addEventListener("resize",function(){size();buildTitle()});
 }
 })();
 (function(){
@@ -797,8 +887,7 @@ fetch(DATA+"?t="+Math.floor(Date.now()/3e5)).then(function(r){
     r.pool_usd=(r.depth_usd==null&&r.tok_side_usd==null)?null:(r.depth_usd||0)+(r.tok_side_usd||0)});
   renderHead(d.eco||{});
   sortRows();renderTable();
-  $("#upd").innerHTML='<span class="dot"></span>chain data as of '+ago(d.updated)+
-    ' · scanned to block '+(d.eco&&d.eco.scan_to?d.eco.scan_to.toLocaleString("en-US"):"?");
+  $("#upd").innerHTML='<span class="dot"></span>updated '+ago(d.updated)+' · straight from the chain';
 }).catch(function(e){
   $("#tbody").innerHTML='<tr><td colspan="10"><div class="loading">data unavailable right now. try a refresh.</div></td></tr>';
 });
