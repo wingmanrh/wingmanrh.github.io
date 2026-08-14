@@ -849,6 +849,7 @@ function detailRow(r){
     (r.burn_eth>0?kv("Already burned",eth(r.burn_eth)+' Ξ'):"")+
     (r.burn_eth>0&&r.creator_eth-r.burn_eth>0.0005?
       kv("Waiting to be burned",eth(r.creator_eth-r.burn_eth)+' Ξ <small>on its way</small>'):"")+
+    (r.burned_tok>=1e5?kv("Tokens burned",fmt(r.burned_tok)+' <small>'+r.burned_pct+'% of supply</small>'):"")+
     kv("Backed by locked ETH",(r.backing==null?"—":(r.backing*100).toFixed(1)+'% <small>of market cap</small>'))+
     kv("Whole pool is worth",usd(r.pool_usd)+' <small>'+usd(r.tok_side_usd)+' is its own tokens</small>');
   return '<tr class="detail"><td colspan="10"><div class="dcollapse" id="dc-'+r.a+'"><div class="dinner"><div class="dwrap">'+

@@ -46,6 +46,8 @@ STATEVIEW  = "0xf3334192d15450cdd385c8b70e03f9a6bd9e673b"
 SEL_POOL_INFO  = "0x7ba03aad"  # getPoolAndPositionInfo(uint256)
 SEL_GET_SLOT0  = "0xc815641c"  # getSlot0(bytes32)
 SEL_GET_LIQ    = "0xfa6793d5"  # getLiquidity(bytes32)
+SEL_BALANCE_OF = "0x70a08231"  # balanceOf(address)
+DEAD_PADDED    = "000000000000000000000000000000000000000000000000000000000000dead"
 
 GENESIS_BLOCK = 22754669       # legacy locker deploy, 2026-07-29 (pre-FRONG)
 CONFIRM_LAG   = 12
@@ -380,6 +382,22 @@ def eth_depth_of(sqrtP, L):
     tok = L * (sp - SQRT_PL) // Q96
     return eth, tok
 
+def fetch_burned(addrs):
+    """token addr -> wei sitting at 0xdead (the platform's burn convention:
+    launch dust, crowd-auction leftovers, and buyback burns all land there)."""
+    out = {}
+    for i in range(0, len(addrs), 75):
+        chunk = addrs[i:i + 75]
+        calls = [("eth_call", [{"to": a, "data": SEL_BALANCE_OF + DEAD_PADDED}, "latest"])
+                 for a in chunk]
+        res = rpc_batch(calls, timeout=90)
+        for a, r in zip(chunk, res):
+            try:
+                out[a] = int(r, 16)
+            except (TypeError, ValueError):
+                pass
+    return out
+
 def fetch_depths(pool_ids):
     """poolId(hex str) -> (sqrtP, tick, L). Batched StateView calls."""
     out = {}
@@ -557,6 +575,8 @@ def main():
     by_liq = sorted(api.values(),
                     key=lambda r: -(r.get("poolStats", {}).get("liquidityUsd") or 0))
     depths = fetch_depths([rec["poolId"] for rec in by_liq[:550] if rec.get("poolId")])
+    burned = fetch_burned([rec["tokenAddress"].lower() for rec in by_liq[:550]
+                           if rec.get("tokenAddress")])
 
     # 4b. fold dust tokens into the pruned aggregate (never prunes API-listed tokens;
     # a revived token restarts a fresh entry — understatement bounded by the tiny floor)
@@ -662,6 +682,8 @@ def main():
             "burn_eth": round(int(f.get("burn_eth", "0")) / 1e18, 6),
             "collected_eth": round(int(f.get("collected_eth", "0")) / 1e18, 6),
             "spark": spark,
+            "burned_tok": round(burned.get(a, 0) / 1e18),
+            "burned_pct": round(burned.get(a, 0) / 1e27 * 100, 2),
         })
     rows_lb.sort(key=lambda r: (r["depth_eth"] is None, -(r["depth_eth"] or 0)))
     for i, r in enumerate(rows_lb):
