@@ -1,12 +1,12 @@
-THICC digest 2026-08-16 00:47 UTC
-Locked forever on Robinhood Chain: 131.8797 ETH recycled across 14694 compounds
-Total curve depth: 618.75 ETH ($1,164,004)
+THICC digest 2026-08-16 01:17 UTC
+Locked forever on Robinhood Chain: 131.9413 ETH recycled across 14708 compounds
+Total curve depth: 624.6 ETH ($1,173,918)
 
 THICCest pools:
-  #1 FRONG: 149.1286 ETH depth, tier THICC, flywheel 21.966263 ETH all-time
-  #2 swappy: 58.7847 ETH depth, tier THICC, flywheel 1.896784 ETH all-time
-  #3 SNOW: 51.26 ETH depth, tier THICK, flywheel 0.516515 ETH all-time
-  #4 POOLS: 46.2789 ETH depth, tier THICK, flywheel 7.209998 ETH all-time
+  #1 FRONG: 149.0362 ETH depth, tier THICC, flywheel 21.966263 ETH all-time
+  #2 swappy: 58.2693 ETH depth, tier THICC, flywheel 1.896784 ETH all-time
+  #3 SNOW: 51.25 ETH depth, tier THICK, flywheel 0.516515 ETH all-time
+  #4 POOLS: 45.9001 ETH depth, tier THICK, flywheel 7.209998 ETH all-time
   #5 LOGOS: 35.9915 ETH depth, tier THICK, flywheel 0.294319 ETH all-time
 
 Biggest flywheel adds (24h):
