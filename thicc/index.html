@@ -234,7 +234,7 @@ footer a:hover{color:var(--fg)}
   <h1>THICC</h1>
   <p class="sub">Tokens ranked by the real ETH locked under them.</p>
   <div class="headline" id="headline" hidden>
-    <span class="amt" id="hl-amt"></span><span class="unit">Ξ locked forever</span>
+    <span class="amt" id="hl-amt"></span><span class="unit">Ξ in locked pools</span>
     <span class="tagpill" id="hl-usd"></span>
   </div>
   <div class="kpis" id="kpis"></div>
@@ -784,7 +784,7 @@ function renderHead(eco){
   countUp($("#hl-amt"),eco.total_depth_eth||0,function(n){return commas(n)});
   $("#hl-usd").textContent=usd(eco.total_depth_usd);
   var pills=[
-    ["Fees locked, all time",fmt(eco.total_fly_eth,1)+" Ξ"],
+    ["Fees locked forever",fmt(eco.total_fly_eth,1)+" Ξ"],
     ["Locked last 24h",fmt(eco.fly_24h_eth,2)+" Ξ"],
     ["Claimed by creators",fmt(eco.total_creator_eth,1)+" Ξ"],
     ["Already burned",fmt(eco.total_burn_eth,1)+" Ξ"]

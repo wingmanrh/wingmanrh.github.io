@@ -1,7 +1,7 @@
 name: thicc
 on:
   schedule:
-    - cron: "9,39 * * * *"
+    - cron: "4,14,24,34,44,54 * * * *"
   workflow_dispatch: {}
   repository_dispatch:
     types: [refresh]
