@@ -26,11 +26,18 @@ jobs:
         run: |
           git config user.name "wingmanrh"
           git config user.email "315023814+wingmanrh@users.noreply.github.com"
-          git add thicc/data
-          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
-          git commit -m "thicc data"
           n=0
-          until git push; do
-            n=$((n+1)); [ $n -ge 3 ] && exit 1
-            git pull --rebase origin main
+          while :; do
+            git add thicc/data
+            if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+            git commit -m "thicc data"
+            if git push; then exit 0; fi
+            n=$((n+1)); [ $n -ge 4 ] && exit 1
+            # Remote moved on while we were scanning. Every run regenerates
+            # thicc/data wholesale, so ours is simply the newer snapshot --
+            # rebasing here only produces conflicts in the JSON blobs.
+            rm -rf "$RUNNER_TEMP/d"; cp -R thicc/data "$RUNNER_TEMP/d"
+            git fetch origin main
+            git reset --hard origin/main
+            rm -rf thicc/data; cp -R "$RUNNER_TEMP/d" thicc/data
           done
