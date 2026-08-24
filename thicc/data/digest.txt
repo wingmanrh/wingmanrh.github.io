@@ -1,15 +1,15 @@
-THICC digest 2026-08-24 22:45 UTC
-Locked forever on Robinhood Chain: 167.8394 ETH recycled across 19697 compounds
-Total curve depth: 559.98 ETH ($1,388,142)
+THICC digest 2026-08-24 22:58 UTC
+Locked forever on Robinhood Chain: 167.8567 ETH recycled across 19700 compounds
+Total curve depth: 567.06 ETH ($1,403,881)
 
 THICCest pools:
-  #1 FRONG: 105.3818 ETH depth, tier THICC, flywheel 23.846567 ETH all-time
-  #2 HOOKR: 95.1085 ETH depth, tier THICC, flywheel 4.580268 ETH all-time
-  #3 PROLOGUE: 41.8677 ETH depth, tier THICC, flywheel 1.661994 ETH all-time
-  #4 SNOW: 41.0785 ETH depth, tier THICC, flywheel 0.539859 ETH all-time
-  #5 POOLS: 40.6835 ETH depth, tier THICC, flywheel 7.401572 ETH all-time
+  #1 FRONG: 106.28 ETH depth, tier THICC, flywheel 23.846567 ETH all-time
+  #2 HOOKR: 95.0786 ETH depth, tier THICC, flywheel 4.580268 ETH all-time
+  #3 POOLS: 43.1658 ETH depth, tier THICC, flywheel 7.401572 ETH all-time
+  #4 PROLOGUE: 41.431 ETH depth, tier THICC, flywheel 1.661994 ETH all-time
+  #5 SNOW: 41.078 ETH depth, tier THICC, flywheel 0.539859 ETH all-time
 
 Biggest flywheel adds (24h):
-  HOOKR: +0.935315 ETH locked in 24h
-  PROLOGUE: +0.306552 ETH locked in 24h
+  HOOKR: +0.865183 ETH locked in 24h
   FRONG: +0.289812 ETH locked in 24h
+  ElonVlad: +0.270701 ETH locked in 24h
