@@ -1,14 +1,9 @@
 name: thicc
+# STOPPED 2026-09-11: the refresh has been failing every 10 minutes since pools.trade
+# started answering its API with a Cloudflare 301 (the gate then aborts). No schedule,
+# no push trigger, no dispatch until the pipeline is fixed; the manual button stays.
 on:
-  schedule:
-    - cron: "4,14,24,34,44,54 * * * *"
   workflow_dispatch: {}
-  repository_dispatch:
-    types: [refresh]
-  push:
-    paths:
-      - "thicc/pipeline/**"
-      - ".github/workflows/thicc.yml"
 permissions:
   contents: write
 concurrency:
